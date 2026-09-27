@@ -106,9 +106,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 50; /* מעל הכל בזמן המשחק */
+            z-index: 50; 
             overflow: hidden;
-            pointer-events: none; /* המיכל מתעלם מלחיצות */
+            pointer-events: none; /* המיכל מתעלם מלחיצות כדי לא לחסום כפתורים מתחת */
         }
 
         .floating-music {
@@ -121,7 +121,7 @@
             transition: transform 0.2s;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            pointer-events: auto; /* הכלים עצמם מקבלים לחיצות */
+            pointer-events: auto; /* הכלים עצמם כן מקבלים לחיצות */
         }
         
         .floating-music:hover {
@@ -139,8 +139,18 @@
             pointer-events: none;
         }
 
-        @keyframes floatUp1 { 0% { transform: translateY(0) rotate(-15deg); opacity: 0; } 10% { opacity: 0.9; } 90% { opacity: 0.9; } 100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; } }
-        @keyframes floatUp2 { 0% { transform: translateY(0) rotate(15deg); opacity: 0; } 10% { opacity: 0.9; } 90% { opacity: 0.9; } 100% { transform: translateY(-120vh) rotate(-20deg); opacity: 0; } }
+        @keyframes floatUp1 { 
+            0% { transform: translateY(0) rotate(-15deg); opacity: 0; } 
+            10% { opacity: 0.9; } 
+            90% { opacity: 0.9; } 
+            100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; } 
+        }
+        @keyframes floatUp2 { 
+            0% { transform: translateY(0) rotate(15deg); opacity: 0; } 
+            10% { opacity: 0.9; } 
+            90% { opacity: 0.9; } 
+            100% { transform: translateY(-120vh) rotate(-20deg); opacity: 0; } 
+        }
 
         @keyframes catchGoodAnim {
             0% { transform: scale(1); opacity: 0.8; }
@@ -207,31 +217,31 @@
     </div>
 
     <div class="music-bg-container print-hide" id="music-layer">
-        <!-- ==== כלי נגינה (אמיתיים - מזכים בנקודה) ==== -->
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation: floatUp1 4s linear infinite; animation-delay: 0s;">🎸</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 25%; animation: floatUp2 5s linear infinite; animation-delay: -1s;">🎹</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 45%; animation: floatUp1 4.5s linear infinite; animation-delay: -2s;">🥁</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 65%; animation: floatUp2 5.5s linear infinite; animation-delay: -3s;">🎷</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 80%; animation: floatUp1 4.8s linear infinite; animation-delay: -1.5s;">🎺</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 15%; animation: floatUp2 4.2s linear infinite; animation-delay: -2.5s;">🎻</div>
+        <!-- כלי נגינה (אמיתיים - מזכים בנקודה) -->
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation: floatUp1 4.5s linear infinite; animation-delay: 0s;">🎸</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 25%; animation: floatUp2 5.5s linear infinite; animation-delay: -1s;">🎹</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 45%; animation: floatUp1 5s linear infinite; animation-delay: -2s;">🥁</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 65%; animation: floatUp2 6s linear infinite; animation-delay: -3s;">🎷</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 80%; animation: floatUp1 5.2s linear infinite; animation-delay: -1.5s;">🎺</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 15%; animation: floatUp2 4.8s linear infinite; animation-delay: -2.5s;">🎻</div>
 
-        <!-- ==== חפצים מבלבלים ותווים (מהירים יותר, מורידים נקודה) ==== -->
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 10%; animation: floatUp2 3s linear infinite; animation-delay: -0.5s;">🎵</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 30%; animation: floatUp1 3.2s linear infinite; animation-delay: -2s;">🔨</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 50%; animation: floatUp2 2.8s linear infinite; animation-delay: -1s;">🔧</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 70%; animation: floatUp1 3.5s linear infinite; animation-delay: -0.2s;">⚽</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 90%; animation: floatUp2 3.1s linear infinite; animation-delay: -1.8s;">🎶</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 40%; animation: floatUp1 2.9s linear infinite; animation-delay: -3s;">✂️</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 60%; animation: floatUp2 3.4s linear infinite; animation-delay: -1.2s;">✏️</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 85%; animation: floatUp1 3.7s linear infinite; animation-delay: -2.7s;">🍔</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 20%; animation: floatUp2 3.3s linear infinite; animation-delay: -1.5s;">📚</div>
+        <!-- חפצים מבלבלים ותווים (מהירים יותר, מורידים נקודה) -->
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 10%; animation: floatUp2 3.5s linear infinite; animation-delay: -0.5s;">🎵</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 30%; animation: floatUp1 3.8s linear infinite; animation-delay: -2s;">🔨</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 50%; animation: floatUp2 3.2s linear infinite; animation-delay: -1s;">🔧</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 70%; animation: floatUp1 4s linear infinite; animation-delay: -0.2s;">⚽</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 90%; animation: floatUp2 3.6s linear infinite; animation-delay: -1.8s;">🎶</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 40%; animation: floatUp1 3.4s linear infinite; animation-delay: -3s;">✂️</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 60%; animation: floatUp2 3.9s linear infinite; animation-delay: -1.2s;">✏️</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 85%; animation: floatUp1 4.2s linear infinite; animation-delay: -2.7s;">🍔</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 20%; animation: floatUp2 3.7s linear infinite; animation-delay: -1.5s;">📚</div>
     </div>
     
+    <!-- חלון הניצחון ונגן הוידאו מ-Google Drive -->
     <div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-8 px-4 print-hide">
         <div class="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-black flex items-center justify-center">
             
-            <!-- iframe של גוגל דרייב -->
-            <iframe id="local-video-player" src="https://drive.google.com/file/d/16-r46rJcO5ZAvAuPQOfVmXfKrmrKiXjf/preview?autoplay=1" class="w-full h-full border-0" allow="autoplay" allowfullscreen></iframe>
+            <iframe id="local-video-player" src="https://drive.google.com/file/d/16-r46rJcO5ZAvAuPQOfVmXfKrmrKiXjf/preview" class="w-full h-full border-0" allow="autoplay" allowfullscreen></iframe>
 
         </div>
         <div class="mt-8 text-center">
@@ -248,7 +258,7 @@
     </div>
 
     <script>
-        // שימוש במרכאות כפולות מחסן מפני תקלות ציטוט
+        // שימוש באובייקטים ללא גרשיים בעייתיים מגן מפני תקלות קוד
         const courses = [
             { id: "piano", name: "פסנתר", needsInstrument: true },
             { id: "vocals", name: "שירה ופיתוח קול", needsInstrument: false },
@@ -263,7 +273,25 @@
         ];
 
         const musicStyles = [
-            "פופ", "רוק", "אלקטרוני", "קלאסי", "ים תיכונית", "מזרחית", "ישראלית", "עברית", "היפ הופ / ראפ", "ג'אז / בלוז"
+            { id: "pop", name: "פופ" },
+            { id: "rock", name: "רוק" },
+            { id: "electronic", name: "אלקטרוני" },
+            { id: "classic", name: "קלאסי" },
+            { id: "med", name: "ים תיכונית" },
+            { id: "mizrahi", name: "מזרחית" },
+            { id: "israeli", name: "ישראלית" },
+            { id: "hebrew", name: "עברית" },
+            { id: "hiphop", name: "היפ הופ / ראפ" },
+            { id: "jazz", name: "ג'אז / בלוז" }
+        ];
+
+        const activities = [
+            { id: "play", name: "לנגן על כלי" },
+            { id: "sing", name: "לשיר" },
+            { id: "dj", name: "לתקלט (לשים מוזיקה)" },
+            { id: "create", name: "ליצור מוזיקה" },
+            { id: "produce", name: "להפיק" },
+            { id: "mix", name: "למקסס ולערוך במחשב" }
         ];
 
         let state = {
@@ -287,7 +315,6 @@
         function setGameMode(active) {
             const container = document.getElementById('music-layer');
             if (container) {
-                // העלמה מוחלטת של הכלים המעופפים בסוף המשחק כדי שלא יפריעו
                 container.style.display = active ? 'block' : 'none';
             }
         }
@@ -299,7 +326,6 @@
             const counterDisplay = document.getElementById('counter-display');
             
             if (isInstrument) {
-                // לחיצה טובה - כלי נגינה בלבד
                 el.classList.add('caught-good');
                 clickCount++;
                 if (counterDisplay) {
@@ -307,9 +333,8 @@
                     counterDisplay.style.transform = 'scale(1.4) rotate(' + (Math.random() * 20 - 10) + 'deg)';
                 }
             } else {
-                // לחיצה שגויה - חפץ, כלי עבודה או תו
                 el.classList.add('caught-bad');
-                clickCount = Math.max(0, clickCount - 1); // יורד אחד לאחור
+                clickCount = Math.max(0, clickCount - 1);
                 if (counterDisplay) {
                     counterDisplay.style.color = '#ef4444'; 
                     counterDisplay.style.transform = 'scale(0.8) rotate(' + (Math.random() * -20) + 'deg)';
@@ -324,7 +349,6 @@
                 }, 200);
             }
             
-            // בדיקת ניצחון
             if (clickCount >= 13) {
                 triggerWin(); 
             }
@@ -335,13 +359,18 @@
         }
 
         function triggerWin() {
-            setGameMode(false); // מסתיר את כלי הנגינה המעופפים
+            setGameMode(false); 
             
             document.getElementById('app').style.display = 'none';
             const winScreen = document.getElementById('win-screen');
             winScreen.classList.remove('hidden');
             winScreen.classList.add('flex');
-            // ברגע שזה מופיע, נגן ה-iframe של גוגל דרייב יופיע ואפשר ללחוץ בו Play בקלות
+            
+            // מוסיף פקודת הפעלה אוטומטית לנגן גוגל דרייב
+            const iframe = document.getElementById('local-video-player');
+            if (!iframe.src.includes('autoplay=1')) {
+                iframe.src = iframe.src + '?autoplay=1';
+            }
         }
         
         function startApp() {
@@ -349,11 +378,9 @@
             winScreen.classList.add('hidden');
             winScreen.classList.remove('flex');
             
-            // עצירת הסרטון על ידי ריענון מקור ה-iframe
-            const videoPlayer = document.getElementById('local-video-player');
-            if (videoPlayer) {
-                videoPlayer.src = videoPlayer.src;
-            }
+            // עוצר את הסרטון
+            const iframe = document.getElementById('local-video-player');
+            iframe.src = iframe.src.replace('?autoplay=1', '');
             
             document.getElementById('app').style.display = 'block';
             goToStep('welcome');
@@ -400,7 +427,7 @@
                     <p class="text-xl text-gray-700 font-medium mb-2">כדי לפתוח את המתנה, עליך לתפוס <br/><span class="text-pink-500 font-bold text-4xl">13</span> כלי נגינה אמיתיים!</p>
                     <div class="text-6xl mb-2 font-bold text-sky-900 transition-all duration-200 inline-block" id="counter-display">0/13</div>
                     <p class="text-lg text-sky-600 font-medium">לחץ על כלי הנגינה המעופפים (גיטרות, תופים, פסנתרים...)</p>
-                    <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 mt-2">
+                    <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 mt-2 mx-auto max-w-sm">
                         <p class="text-md text-red-600 font-bold">זהירות מהמכשולים!</p>
                         <p class="text-sm text-red-500 font-medium mt-1">לחיצה על תווים, כלי עבודה או חפצים לא קשורים תוריד לך נקודה אחורה!</p>
                     </div>
@@ -435,13 +462,11 @@
         }
 
         function renderQuiz1() {
-            const activities = ['לנגן על כלי', 'לשיר', 'לתקלט (לשים מוזיקה)', 'ליצור מוזיקה', 'להפיק', 'למקסס ולערוך במחשב'];
-            
             let optionsHtml = activities.map((act) => `
                 <label class="custom-radio cursor-pointer block">
-                    <input type="radio" name="activity" value="${act}" class="hidden" onchange="state.answers.activity = this.value">
+                    <input type="radio" name="activity" value="${act.id}" class="hidden" onchange="state.answers.activity = this.value">
                     <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-lg hover:border-yellow-300">
-                        ${act}
+                        ${act.name}
                     </div>
                 </label>
             `).join('');
@@ -467,11 +492,11 @@
         function renderQuiz2() {
             let optionsHtml = musicStyles.map((style) => `
                 <label class="custom-checkbox cursor-pointer block">
-                    <input type="checkbox" value="${style}" class="hidden" 
-                        ${state.answers.styles.includes(style) ? 'checked' : ''}
-                        onchange="toggleStyle('${style}')">
+                    <input type="checkbox" value="${style.id}" class="hidden" 
+                        ${state.answers.styles.includes(style.id) ? 'checked' : ''}
+                        onchange="toggleStyle('${style.id}')">
                     <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-md hover:border-purple-300 text-center">
-                        ${style}
+                        ${style.name}
                     </div>
                 </label>
             `).join('');
@@ -494,12 +519,12 @@
             renderStep(html);
         }
 
-        function toggleStyle(style) {
-            const index = state.answers.styles.indexOf(style);
+        function toggleStyle(styleId) {
+            const index = state.answers.styles.indexOf(styleId);
             if (index > -1) {
                 state.answers.styles.splice(index, 1);
             } else {
-                state.answers.styles.push(style);
+                state.answers.styles.push(styleId);
             }
         }
 
@@ -864,7 +889,7 @@
             }
         }
 
-        // התחל את המשחק!
+        // הפעלת האפליקציה!
         goToStep('entry');
     </script>
 </body>
