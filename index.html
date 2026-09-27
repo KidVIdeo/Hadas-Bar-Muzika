@@ -92,7 +92,7 @@ h1, h2, h3, .font-bold, .font-semibold {
     position: absolute;
     font-size: 3.5rem;
     opacity: 0.85;
-    animation: floatUp linear infinite, sway ease-in-out infinite alternate;
+    animation: floatUp linear infinite;
     bottom: -100px;
     filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.15));
     cursor: pointer;
@@ -128,10 +128,6 @@ h1, h2, h3, .font-bold, .font-semibold {
     10% { opacity: 0.9; }
     90% { opacity: 0.9; }
     100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
-}
-@keyframes sway {
-    0% { margin-left: -50px; }
-    100% { margin-left: 50px; }
 }
 .app-container {
     position: relative;
@@ -181,25 +177,7 @@ h1, h2, h3, .font-bold, .font-semibold {
     <div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.5;"></div>
 </div>
 
-<div class="music-bg-container print-hide" id="music-layer">
-    <div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation-duration: 7s; animation-delay: 0s;">🎸</div>
-    <div class="floating-music" onclick="catchItem(this, true)" style="left: 25%; animation-duration: 8s; animation-delay: -1s;">🎹</div>
-    <div class="floating-music" onclick="catchItem(this, true)" style="left: 45%; animation-duration: 6.5s; animation-delay: -2s;">🥁</div>
-    <div class="floating-music" onclick="catchItem(this, true)" style="left: 65%; animation-duration: 7.5s; animation-delay: -3s;">🎷</div>
-    <div class="floating-music" onclick="catchItem(this, true)" style="left: 80%; animation-duration: 6.8s; animation-delay: -1.5s;">🎺</div>
-    <div class="floating-music" onclick="catchItem(this, true)" style="left: 15%; animation-duration: 7.2s; animation-delay: -2.5s;">🎻</div>
-    
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 10%; animation-duration: 3.5s; animation-delay: -1s;">🎵</div>
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 30%; animation-duration: 3.8s; animation-delay: -2.5s;">🔨</div>
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 50%; animation-duration: 3.2s; animation-delay: -0.5s;">🔧</div>
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 70%; animation-duration: 3.6s; animation-delay: -3s;">⚽</div>
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 90%; animation-duration: 3.9s; animation-delay: -1.5s;">🎶</div>
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 40%; animation-duration: 3.4s; animation-delay: -4s;">✂️</div>
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 60%; animation-duration: 3.7s; animation-delay: -2s;">✏️</div>
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 80%; animation-duration: 3.3s; animation-delay: -1.2s;">🍔</div>
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 18%; animation-duration: 3.5s; animation-delay: -3.5s;">📚</div>
-    <div class="floating-music" onclick="catchItem(this, false)" style="left: 88%; animation-duration: 3.8s; animation-delay: -0.8s;">🍎</div>
-</div>
+<div class="music-bg-container print-hide" id="music-layer"></div>
 
 <div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-between py-6 px-4 print-hide">
     <div class="w-full max-w-3xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-white mt-2 flex items-center justify-center">
@@ -216,11 +194,9 @@ h1, h2, h3, .font-bold, .font-semibold {
     </div>
 </div>
 
-<!-- מסך האפליקציה המרכזי שיופיע ריק בזמן המשחק כדי לא להסתיר כלום -->
 <div id="app" class="app-container w-full max-w-xl mx-auto rounded-3xl shadow-2xl p-4 sm:p-6 text-center relative z-10" style="display:none;">
 </div>
 
-<!-- מונה נקודות צף שלא מפריע למשחק -->
 <div id="floating-counter" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 bg-white/80 backdrop-blur-md px-6 py-2 rounded-full shadow-lg border-2 border-sky-200 text-3xl font-bold text-sky-900 print-hide">
     <span id="counter-display">0</span>/13
 </div>
@@ -243,6 +219,25 @@ const musicStyles = [
     "פופ", "רוק", "אלקטרוני", "קלאסי", "ים תיכונית", "מזרחית", "ישראלית", "עברית", "היפ הופ / ראפ", "ג'אז / בלוז"
 ];
 
+const gameItems = [
+    { emoji: "🎸", isInst: true },
+    { emoji: "🎹", isInst: true },
+    { emoji: "🥁", isInst: true },
+    { emoji: "🎷", isInst: true },
+    { emoji: "🎺", isInst: true },
+    { emoji: "🎻", isInst: true },
+    { emoji: "🎵", isInst: false },
+    { emoji: "🔨", isInst: false },
+    { emoji: "🔧", isInst: false },
+    { emoji: "⚽", isInst: false },
+    { emoji: "🎶", isInst: false },
+    { emoji: "✂️", isInst: false },
+    { emoji: "✏️", isInst: false },
+    { emoji: "🍔", isInst: false },
+    { emoji: "📚", isInst: false },
+    { emoji: "🍎", isInst: false }
+];
+
 let state = {
     currentStep: "entry",
     answers: {
@@ -260,6 +255,7 @@ let state = {
 };
 
 let clickCount = 0;
+let spawnerInterval = null;
 
 function setGameMode(active) {
     const container = document.getElementById("music-layer");
@@ -271,6 +267,66 @@ function setGameMode(active) {
     if (counter) {
         counter.style.display = active ? "block" : "none";
     }
+
+    if (active) {
+        startSpawner();
+    } else {
+        stopSpawner();
+    }
+}
+
+function startSpawner() {
+    stopSpawner();
+    const container = document.getElementById("music-layer");
+    if (!container) return;
+    container.innerHTML = "";
+
+    for (let i = 0; i < 10; i++) {
+        spawnFloatingItem();
+    }
+
+    spawnerInterval = setInterval(() => {
+        if (state.currentStep === "entry" && clickCount < 13) {
+            spawnFloatingItem();
+        }
+    }, 600);
+}
+
+function stopSpawner() {
+    if (spawnerInterval) {
+        clearInterval(spawnerInterval);
+        spawnerInterval = null;
+    }
+    const container = document.getElementById("music-layer");
+    if (container) container.innerHTML = "";
+}
+
+function spawnFloatingItem() {
+    const container = document.getElementById("music-layer");
+    if (!container) return;
+
+    const itemData = gameItems[Math.floor(Math.random() * gameItems.length)];
+    const el = document.createElement("div");
+    el.className = "floating-music";
+    el.innerText = itemData.emoji;
+    
+    const randomLeft = Math.floor(Math.random() * 85) + 5;
+    const duration = Math.random() * 3 + 5; // בין 5 ל-8 שניות
+    
+    el.style.left = randomLeft + "%";
+    el.style.animationDuration = duration + "s";
+
+    el.onclick = function() {
+        catchItem(el, itemData.isInst);
+    };
+
+    container.appendChild(el);
+
+    setTimeout(() => {
+        if (el.parentNode) {
+            el.parentNode.removeChild(el);
+        }
+    }, duration * 1000);
 }
 
 function catchItem(el, isInstrument) {
@@ -363,7 +419,7 @@ function showCustomAlert(msg, elementIdToInsertAfter) {
 function renderEntry() {
     clickCount = 0;
     setGameMode(true);
-    document.getElementById("app").style.display = "none"; // מסתיר את המסגרת המרכזית כדי שייראו רק את המשחק
+    document.getElementById("app").style.display = "none";
     const counterDisplay = document.getElementById("counter-display");
     if (counterDisplay) counterDisplay.innerText = "0";
 }
@@ -690,7 +746,6 @@ function goToStep(step) {
     state.currentStep = step;
     window.scrollTo({ top: 0, behavior: "smooth" });
     
-    // מציג את המסגרת המרכזית בכל שלב חוץ מאשר במשחק עצמו
     const appElement = document.getElementById("app");
     if (step === "entry") {
         appElement.style.display = "none";
