@@ -91,7 +91,7 @@ h1, h2, h3, .font-bold, .font-semibold {
 .floating-music {
     position: absolute;
     font-size: 3.5rem;
-    opacity: 0.85;
+    opacity: 0.9;
     animation: floatUp linear infinite;
     bottom: -100px;
     filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.15));
@@ -281,15 +281,18 @@ function startSpawner() {
     if (!container) return;
     container.innerHTML = "";
 
-    for (let i = 0; i < 10; i++) {
+    // יצירת כמות התחלתית עשירה של פריטים על המסך
+    for (let i = 0; i < 15; i++) {
         spawnFloatingItem();
     }
 
+    // ייצור רציף ומהיר של פריטים חדשים כל חצי שנייה כדי שלא ייגמר לעולם
     spawnerInterval = setInterval(() => {
         if (state.currentStep === "entry" && clickCount < 13) {
             spawnFloatingItem();
+            spawnFloatingItem(); // מייצר שניים בכל פעם לוודא שפע אינסופי
         }
-    }, 600);
+    }, 500);
 }
 
 function stopSpawner() {
@@ -297,21 +300,19 @@ function stopSpawner() {
         clearInterval(spawnerInterval);
         spawnerInterval = null;
     }
-    const container = document.getElementById("music-layer");
-    if (container) container.innerHTML = "";
 }
 
 function spawnFloatingItem() {
     const container = document.getElementById("music-layer");
-    if (!container) return;
+    if (!container || state.currentStep !== "entry") return;
 
     const itemData = gameItems[Math.floor(Math.random() * gameItems.length)];
     const el = document.createElement("div");
     el.className = "floating-music";
     el.innerText = itemData.emoji;
     
-    const randomLeft = Math.floor(Math.random() * 85) + 5;
-    const duration = Math.random() * 3 + 5; // בין 5 ל-8 שניות
+    const randomLeft = Math.floor(Math.random() * 90) + 2;
+    const duration = Math.random() * 2 + 4; // מהירות זרימה נוחה (בין 4 ל-6 שניות)
     
     el.style.left = randomLeft + "%";
     el.style.animationDuration = duration + "s";
@@ -322,6 +323,7 @@ function spawnFloatingItem() {
 
     container.appendChild(el);
 
+    // הסרת הפריט מהזיכרון כשהוא יוצא מהמסך
     setTimeout(() => {
         if (el.parentNode) {
             el.parentNode.removeChild(el);
@@ -749,8 +751,10 @@ function goToStep(step) {
     const appElement = document.getElementById("app");
     if (step === "entry") {
         appElement.style.display = "none";
+        setGameMode(true); // מפעיל מחדש את מחולל הפריטים בוודאות
     } else {
         appElement.style.display = "block";
+        setGameMode(false);
     }
 
     if (step === "loanOrSchedule") {
