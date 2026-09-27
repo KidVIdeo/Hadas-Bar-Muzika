@@ -103,10 +103,10 @@ h1, h2, h3, .font-bold, .font-semibold {
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     pointer-events: auto;
-    touch-action: manipulation;
 }
 .floating-music:hover {
-    transform: scale(1.1);
+    transform: scale(1.2);
+    filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.3));
 }
 .caught-good {
     animation: catchGoodAnim 0.3s forwards !important;
@@ -136,7 +136,7 @@ h1, h2, h3, .font-bold, .font-semibold {
 .app-container {
     position: relative;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255, 255, 255, 0.6);
     transition: all 0.5s ease;
@@ -181,35 +181,42 @@ h1, h2, h3, .font-bold, .font-semibold {
     <div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.5;"></div>
 </div>
 
-<!-- שכבת המשחק הדינמית -->
+<!-- מיכל דינמי למשחק (כלי הנגינה יופיעו כאן) -->
 <div class="music-bg-container print-hide" id="music-layer"></div>
 
-<!-- מסך הניצחון והווידאו -->
-<div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-6 px-4 print-hide overflow-y-auto">
-    <h2 class="text-3xl font-bold text-sky-800 mb-2 drop-shadow-md text-center">כל הכבוד! 🎉</h2>
-    <p class="text-lg text-gray-700 font-medium mb-4 text-center">תפסת את כל הכלים! לחץ על <span class="font-bold">Play (▶)</span> כדי לצפות בהפתעה שלך:</p>
+<!-- מסך הניצחון והוידאו - תוקן כך שיהיה גדול, בפרופורציה 16:9 תמיד ונגיש לחלוטין! -->
+<div id="win-screen" class="hidden fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-6 px-4 print-hide overflow-y-auto">
     
-    <div class="w-full max-w-2xl bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative my-2">
-        <!-- נגן הווידאו המקומי עם טעינת פריים ראשוני -->
-        <video id="local-video-player" controls playsinline preload="metadata" class="w-full max-h-[50vh] object-contain mx-auto bg-black">
-            <source src="kidd-video.mp4#t=0.1" type="video/mp4">
+    <div class="text-center w-full max-w-3xl mx-auto mb-4 mt-8">
+        <h2 class="text-4xl sm:text-5xl font-bold text-sky-800 drop-shadow-md mb-2">כל הכבוד! 🎉</h2>
+        <p class="text-xl sm:text-2xl text-gray-700 font-medium">
+            תפסת את כל הכלים!<br>לחץ על הפליי (▶) כדי לצפות בהפתעה שלך:
+        </p>
+    </div>
+
+    <!-- כאן תיקנו את המלבן הצר: שימוש ב- aspect-video שומר עליו רחב וגדול! -->
+    <div class="w-full max-w-3xl mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative aspect-video my-4 flex items-center justify-center">
+        <!-- נגן וידאו יציב, פשוט ומותאם למובייל -->
+        <video id="local-video-player" controls playsinline preload="auto" class="absolute inset-0 w-full h-full object-contain">
+            <source src="kidd-video.mp4" type="video/mp4">
             הדפדפן שלך אינו תומך בהפעלת וידאו.
         </video>
     </div>
     
-    <div class="mt-6 text-center w-full">
-        <button onclick="goToStep('welcome')" class="btn-rainbow px-10 py-3 rounded-full text-xl shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
-            המשך לקבלת המתנה!
+    <div class="mt-4 mb-8 text-center w-full max-w-3xl mx-auto">
+        <button onclick="goToStep('welcome')" class="btn-rainbow px-10 py-4 rounded-full text-2xl font-bold shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
+            המשך לקבלת השובר 🎁
         </button>
     </div>
+
 </div>
 
-<!-- מיכל האפליקציה המרכזי שבו יוצגו ההוראות והשאלון -->
-<div id="app" class="app-container w-full max-w-xl mx-auto rounded-3xl shadow-2xl p-4 sm:p-6 text-center relative z-10">
+<!-- מסך האפליקציה המרכזי -->
+<div id="app" class="app-container w-full max-w-xl mx-auto rounded-3xl shadow-2xl p-4 sm:p-6 text-center relative z-10" style="display:none;">
 </div>
 
-<!-- מונה משחק צף (יופיע רק בזמן המשחק עצמו) -->
-<div id="floating-counter" class="hidden fixed top-4 left-1/2 transform -translate-x-1/2 z-40 bg-white/90 backdrop-blur-md px-6 py-2 rounded-full shadow-lg border-2 border-sky-300 text-3xl font-bold text-sky-900 print-hide">
+<!-- מונה נקודות צף של המשחק -->
+<div id="floating-counter" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 bg-white/90 backdrop-blur-md px-6 py-2 rounded-full shadow-lg border-2 border-sky-200 text-3xl font-bold text-sky-900 print-hide hidden">
     <span id="counter-display">0</span>/13
 </div>
 
@@ -272,7 +279,6 @@ let spawnerInterval = null;
 function setGameMode(active) {
     const container = document.getElementById("music-layer");
     const counter = document.getElementById("floating-counter");
-    
     if (container) {
         container.style.pointerEvents = active ? "auto" : "none";
         container.style.display = active ? "block" : "none";
@@ -296,16 +302,16 @@ function startSpawner() {
     if (!container) return;
     container.innerHTML = "";
 
-    // זריקת כלים ראשונית על המסך
-    for (let i = 0; i < 12; i++) {
+    // פריסה התחלתית
+    for (let i = 0; i < 15; i++) {
         spawnFloatingItem();
     }
 
-    // ייצור רציף ובלתי פוסק כל חצי שנייה
+    // ייצור מתמיד שמונע מהכלים להיגמר
     spawnerInterval = setInterval(() => {
         if (state.currentStep === "game" && clickCount < 13) {
             spawnFloatingItem();
-            spawnFloatingItem(); 
+            spawnFloatingItem();
         }
     }, 500);
 }
@@ -315,6 +321,8 @@ function stopSpawner() {
         clearInterval(spawnerInterval);
         spawnerInterval = null;
     }
+    const container = document.getElementById("music-layer");
+    if (container) container.innerHTML = "";
 }
 
 function spawnFloatingItem() {
@@ -326,13 +334,13 @@ function spawnFloatingItem() {
     el.className = "floating-music";
     el.innerText = itemData.emoji;
     
-    const randomLeft = Math.floor(Math.random() * 85) + 5;
-    const duration = Math.random() * 2.5 + 3.5; 
+    const randomLeft = Math.floor(Math.random() * 90) + 2;
+    const duration = Math.random() * 2 + 3.5;
     
     el.style.left = randomLeft + "%";
     el.style.animationDuration = duration + "s";
 
-    // שימוש באירוע pointerdown שהוא אמין ומהיר מאוד למסכי מגע
+    // שימוש באירוע מתקדם לניידים שמבטיח לכידה מהירה!
     el.onpointerdown = function(e) {
         e.preventDefault();
         catchItem(el, itemData.isInst);
@@ -356,11 +364,15 @@ function catchItem(el, isInstrument) {
     if (isInstrument) {
         el.classList.add("caught-good");
         clickCount++;
-        if (counterDisplay) counterDisplay.style.color = "#0284c7";
+        if (counterDisplay) {
+            counterDisplay.style.color = "#0284c7";
+        }
     } else {
         el.classList.add("caught-bad");
         clickCount = Math.max(0, clickCount - 1);
-        if (counterDisplay) counterDisplay.style.color = "#ef4444";
+        if (counterDisplay) {
+            counterDisplay.style.color = "#ef4444";
+        }
     }
     
     if (counterDisplay) {
@@ -376,14 +388,14 @@ function catchItem(el, isInstrument) {
 }
 
 function triggerWin() {
-    setGameMode(false); // מפסיק את המשחק
-    document.getElementById("app").style.display = "none"; // מסתיר את חלון האפליקציה המרכזי
+    setGameMode(false); // מכבה את המשחק
+    document.getElementById("app").style.display = "none"; // מסתיר את החלון
     
     const winScreen = document.getElementById("win-screen");
     winScreen.classList.remove("hidden");
     winScreen.classList.add("flex");
     
-    // מאתחל את הווידאו אבל מחכה ללחיצה של המשתמש
+    // מכין את הוידאו ללחיצה, בלי לנסות להפעיל אותו אוטומטית ולשבור את הדפדפן
     const videoPlayer = document.getElementById("local-video-player");
     if (videoPlayer) {
         videoPlayer.currentTime = 0;
@@ -410,7 +422,7 @@ function showCustomAlert(msg, elementIdToInsertAfter) {
     if (existingAlert) existingAlert.remove();
     const alertDiv = document.createElement("div");
     alertDiv.id = "custom-alert";
-    alertDiv.className = "bg-red-100 text-red-700 p-2 rounded-lg border border-red-300 text-xs font-bold mt-1 animate-pulse";
+    alertDiv.className = "bg-red-100 text-red-700 p-2 rounded-lg border border-red-300 text-sm font-bold mt-2 animate-pulse";
     alertDiv.innerText = msg;
     const target = document.getElementById(elementIdToInsertAfter);
     if(target) target.appendChild(alertDiv);
@@ -419,20 +431,20 @@ function showCustomAlert(msg, elementIdToInsertAfter) {
     }, 3500);
 }
 
-// מסך ההוראות המקדים לפני המשחק
+// מסך הוראות נקי - לפני שמתחילים לשחק כדי לא להפריע למסך
 function renderIntro() {
     const html = `
-        <div class="space-y-4 py-2">
-            <h1 class="text-3xl font-bold text-sky-800 mb-2">מוכן למשחק?</h1>
-            <p class="text-lg text-gray-700 font-medium">כדי לפתוח את המתנה, עליך לתפוס <span class="font-bold text-pink-500 text-2xl">13</span> כלי נגינה!</p>
+        <div class="space-y-6 py-4">
+            <h1 class="text-4xl font-bold text-sky-800 mb-2">מוכן למשחק?</h1>
+            <p class="text-xl text-gray-700 font-medium">כדי לפתוח את המתנה, עליך לתפוס <span class="font-bold text-pink-500 text-3xl">13</span> כלי נגינה אמיתיים!</p>
             
-            <div class="bg-white/60 border border-sky-100 rounded-xl p-4 text-right space-y-2 mt-4 text-base shadow-sm">
-                <p>✔️ לחץ על <strong>כלי הנגינה</strong> המעופפים (🎸, 🎹, 🥁) כדי לצבור נקודות.</p>
-                <p>❌ <strong class="text-red-500">זהירות!</strong> לחיצה על תווים או חפצים אחרים (🔨, ⚽, 🎵) תוריד לך נקודה!</p>
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-5 text-right space-y-3 mt-4 text-lg shadow-sm">
+                <p>✔️ תפוס רק <strong>כלי נגינה</strong> (🎸, 🎹, 🥁, 🎷...)</p>
+                <p>❌ <strong class="text-red-500 font-bold">זהירות!</strong> תווים, כדורים או חפצים אחרים יורידו לך נקודות!</p>
             </div>
             
-            <div class="mt-6 pt-2">
-                <button onclick="goToStep('game')" class="btn-rainbow px-10 py-3 rounded-full text-xl shadow-lg w-full sm:w-auto">
+            <div class="mt-8 pt-4">
+                <button onclick="goToStep('game')" class="btn-rainbow px-10 py-4 rounded-full text-2xl font-bold shadow-lg w-full sm:w-auto hover:scale-105 transition-transform">
                     התחל משחק!
                 </button>
             </div>
@@ -442,6 +454,12 @@ function renderIntro() {
 }
 
 function renderWelcome() {
+    // במידה והוידאו מתנגן, צריך לעצור אותו כשממשיכים
+    const videoPlayer = document.getElementById("local-video-player");
+    if (videoPlayer) {
+        videoPlayer.pause();
+    }
+    
     const html = `
         <div class="space-y-4">
             <h1 class="text-3xl font-bold text-sky-800 mb-1">מזל טוב להדס נריה פלד!</h1>
@@ -759,33 +777,32 @@ function validateAndGo(nextStep, isValid, errorMsg, containerId) {
     }
 }
 
-// ניווט ושליטה בשלבי האפליקציה
 function goToStep(step) {
     state.currentStep = step;
     window.scrollTo({ top: 0, behavior: "smooth" });
     
     const appElement = document.getElementById("app");
     const winScreen = document.getElementById("win-screen");
-    const videoPlayer = document.getElementById("local-video-player");
     
-    // מסתיר את מסך הניצחון ואת הווידאו במעבר שלבים
+    // סגירת מסך הניצחון כברירת מחדל
     winScreen.classList.add("hidden");
     winScreen.classList.remove("flex");
-    if (videoPlayer) videoPlayer.pause();
+
+    if (step === "loanOrSchedule") {
+        goToLoanOrSchedule();
+        return;
+    }
     
-    if (step === "intro") {
-        appElement.style.display = "block";
-        setGameMode(false);
-        renderIntro();
-    } else if (step === "game") {
+    if (step === "game") {
+        // שלב המשחק נטו! ללא הוראות
         appElement.style.display = "none";
         setGameMode(true);
-    } else if (step === "loanOrSchedule") {
-        goToLoanOrSchedule();
     } else {
         appElement.style.display = "block";
         setGameMode(false);
+        
         switch (step) {
+            case "intro": renderIntro(); break;
             case "welcome": renderWelcome(); break;
             case "quiz1": renderQuiz1(); break;
             case "quiz2": renderQuiz2(); break;
