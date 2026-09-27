@@ -181,10 +181,10 @@ h1, h2, h3, .font-bold, .font-semibold {
     <div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.5;"></div>
 </div>
 
-<!-- מיכל דינמי למשחק (כלי הנגינה יופיעו כאן) -->
+<!-- מיכל דינמי למשחק -->
 <div class="music-bg-container print-hide" id="music-layer"></div>
 
-<!-- מסך הניצחון והוידאו - תוקן כך שיהיה גדול, בפרופורציה 16:9 תמיד ונגיש לחלוטין! -->
+<!-- מסך הניצחון והוידאו -->
 <div id="win-screen" class="hidden fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-6 px-4 print-hide overflow-y-auto">
     
     <div class="text-center w-full max-w-3xl mx-auto mb-4 mt-8">
@@ -194,13 +194,22 @@ h1, h2, h3, .font-bold, .font-semibold {
         </p>
     </div>
 
-    <!-- כאן תיקנו את המלבן הצר: שימוש ב- aspect-video שומר עליו רחב וגדול! -->
-    <div class="w-full max-w-3xl mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative aspect-video my-4 flex items-center justify-center">
-        <!-- נגן וידאו יציב, פשוט ומותאם למובייל -->
-        <video id="local-video-player" controls playsinline preload="auto" class="absolute inset-0 w-full h-full object-contain">
+    <!-- נגן וידאו מותאם אישית: מקובע לגודל 16:9 ועם כפתור פליי ענק -->
+    <div class="w-full max-w-3xl mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative aspect-video my-4 flex items-center justify-center group" id="video-container">
+        
+        <video id="local-video-player" playsinline class="absolute inset-0 w-full h-full object-contain">
             <source src="kidd-video.mp4" type="video/mp4">
             הדפדפן שלך אינו תומך בהפעלת וידאו.
         </video>
+        
+        <!-- כפתור הפליי הענק שמכריח את הדפדפן להתחיל ניגון -->
+        <div id="custom-play-overlay" class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer bg-black/30 hover:bg-black/10 transition-all" onclick="playMyVideo()">
+            <div class="bg-white/90 text-sky-600 rounded-full w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.6)] transform transition-transform hover:scale-110 mb-4">
+                <svg class="w-12 h-12 sm:w-16 sm:h-16 ml-2" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
+            </div>
+            <span class="text-white text-xl font-bold bg-black/60 px-6 py-2 rounded-full shadow-lg">לחץ כאן לצפייה!</span>
+        </div>
+
     </div>
     
     <div class="mt-4 mb-8 text-center w-full max-w-3xl mx-auto">
@@ -211,11 +220,11 @@ h1, h2, h3, .font-bold, .font-semibold {
 
 </div>
 
-<!-- מסך האפליקציה המרכזי -->
+<!-- מסך הוראות נקי שיופיע לפני המשחק -->
 <div id="app" class="app-container w-full max-w-xl mx-auto rounded-3xl shadow-2xl p-4 sm:p-6 text-center relative z-10" style="display:none;">
 </div>
 
-<!-- מונה נקודות צף של המשחק -->
+<!-- מונה נקודות צף של המשחק (נסתר בהתחלה) -->
 <div id="floating-counter" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 bg-white/90 backdrop-blur-md px-6 py-2 rounded-full shadow-lg border-2 border-sky-200 text-3xl font-bold text-sky-900 print-hide hidden">
     <span id="counter-display">0</span>/13
 </div>
@@ -258,7 +267,7 @@ const gameItems = [
 ];
 
 let state = {
-    currentStep: "intro",
+    currentStep: "intro", // מתחילים ממסך ההוראות ולא מהמשחק ישר
     answers: {
         activity: "",
         styles: [],
@@ -276,6 +285,34 @@ let state = {
 let clickCount = 0;
 let spawnerInterval = null;
 
+// האזנה לשגיאות בוידאו כדי לדעת אם הקובץ באמת חסר
+window.addEventListener('DOMContentLoaded', () => {
+    const vid = document.getElementById("local-video-player");
+    if(vid) {
+        vid.addEventListener('error', function(e) {
+            console.error("Video Error:", e);
+            alert("שגיאה מגיטהאב: לא מצאתי את קובץ הוידאו! אנא ודא שהעלית את הקובץ בדיוק בשם kidd-video.mp4 (אותיות קטנות וללא רווחים) לאותה התיקייה של האתר.");
+        }, true);
+    }
+});
+
+// פונקציית הפעלת הוידאו המותאמת אישית
+function playMyVideo() {
+    const vid = document.getElementById("local-video-player");
+    const overlay = document.getElementById("custom-play-overlay");
+    
+    vid.play().then(() => {
+        overlay.style.display = 'none'; // מעלים את הכפתור הענק שלנו
+        vid.setAttribute("controls", "controls"); // מפעיל את כפתורי הוידאו הרגילים למקרה שירצה לעצור
+    }).catch(err => {
+        console.error("Video play failed:", err);
+        alert("הדפדפן חסם את ההפעלה. ייתכן שקובץ הוידאו לא קיים בשרת בנתיב הנכון.");
+        vid.setAttribute("controls", "controls");
+        overlay.style.display = 'none';
+    });
+}
+
+
 function setGameMode(active) {
     const container = document.getElementById("music-layer");
     const counter = document.getElementById("floating-counter");
@@ -284,6 +321,7 @@ function setGameMode(active) {
         container.style.display = active ? "block" : "none";
     }
     if (counter) {
+        // מראה את המונה רק כשהמשחק פעיל
         counter.style.display = active ? "block" : "none";
     }
 
@@ -302,7 +340,7 @@ function startSpawner() {
     if (!container) return;
     container.innerHTML = "";
 
-    // פריסה התחלתית
+    // פריסה התחלתית עשירה
     for (let i = 0; i < 15; i++) {
         spawnFloatingItem();
     }
@@ -782,40 +820,37 @@ function goToStep(step) {
     window.scrollTo({ top: 0, behavior: "smooth" });
     
     const appElement = document.getElementById("app");
-    const winScreen = document.getElementById("win-screen");
     
-    // סגירת מסך הניצחון כברירת מחדל
-    winScreen.classList.add("hidden");
-    winScreen.classList.remove("flex");
+    // מסתיר את תיבת התוכן המרכזית בזמן המשחק עצמו כדי שיהיה נקי
+    if (step === "game") {
+        appElement.style.display = "none";
+        setGameMode(true);
+    } else {
+        appElement.style.display = "block";
+        setGameMode(false);
+    }
 
     if (step === "loanOrSchedule") {
         goToLoanOrSchedule();
         return;
     }
     
-    if (step === "game") {
-        // שלב המשחק נטו! ללא הוראות
-        appElement.style.display = "none";
-        setGameMode(true);
-    } else {
-        appElement.style.display = "block";
-        setGameMode(false);
-        
-        switch (step) {
-            case "intro": renderIntro(); break;
-            case "welcome": renderWelcome(); break;
-            case "quiz1": renderQuiz1(); break;
-            case "quiz2": renderQuiz2(); break;
-            case "quiz3": renderQuiz3(); break;
-            case "courses": renderCourses(); break;
-            case "loan": renderLoan(); break;
-            case "schedule": renderSchedule(); break;
-            case "summary": renderSummary(); break;
-        }
+    switch (step) {
+        case "intro": renderIntro(); break;
+        // case "game": מתבצע על ידי setGameMode למעלה
+        case "welcome": renderWelcome(); break;
+        case "quiz1": renderQuiz1(); break;
+        case "quiz2": renderQuiz2(); break;
+        case "quiz3": renderQuiz3(); break;
+        case "courses": renderCourses(); break;
+        case "loan": renderLoan(); break;
+        case "schedule": renderSchedule(); break;
+        case "summary": renderSummary(); break;
     }
 }
 
 window.onload = () => {
+    // מתחילים תמיד במסך ההוראות
     goToStep("intro");
 };
 </script>
