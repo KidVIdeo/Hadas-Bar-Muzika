@@ -201,22 +201,28 @@ h1, h2, h3, .font-bold, .font-semibold {
     <div class="floating-music" onclick="catchItem(this, false)" style="left: 88%; animation-duration: 3.8s; animation-delay: -0.8s;">🍎</div>
 </div>
 
-<div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/90 backdrop-blur-md flex-col items-center justify-between py-8 px-4 print-hide">
-    <div class="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-black mt-2 flex items-center justify-center">
-        <video id="local-video-player" controls playsinline preload="metadata" class="w-full h-full object-cover">
-            <source src="kidd-video.mp4#t=0.1" type="video/mp4">
+<div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-between py-6 px-4 print-hide">
+    <div class="w-full max-w-3xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-white mt-2 flex items-center justify-center">
+        <video id="local-video-player" controls playsinline preload="auto" class="w-full h-full object-contain">
+            <source src="kidd-video.mp4" type="video/mp4">
             הדפדפן שלך אינו תומך בהפעלת וידאו.
         </video>
     </div>
-    <div class="mt-4 text-center w-full">
-        <h2 class="text-3xl font-bold text-sky-800 mb-4 drop-shadow-md">כל הכבוד! הצלחת לתפוס 13 כלי נגינה!</h2>
-        <button onclick="startApp()" class="btn-rainbow px-10 py-4 rounded-full text-2xl shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
+    <div class="mt-2 text-center w-full">
+        <h2 class="text-3xl font-bold text-sky-800 mb-3 drop-shadow-md">כל הכבוד! הצלחת לתפוס 13 כלי נגינה! 🎉</h2>
+        <button onclick="startApp()" class="btn-rainbow px-10 py-3 rounded-full text-xl shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
             ברוך הבא לעולם המוזיקה!
         </button>
     </div>
 </div>
 
-<div id="app" class="app-container w-full max-w-3xl mx-auto rounded-3xl shadow-2xl p-6 sm:p-10 text-center relative z-10">
+<!-- מסך האפליקציה המרכזי שיופיע ריק בזמן המשחק כדי לא להסתיר כלום -->
+<div id="app" class="app-container w-full max-w-xl mx-auto rounded-3xl shadow-2xl p-4 sm:p-6 text-center relative z-10" style="display:none;">
+</div>
+
+<!-- מונה נקודות צף שלא מפריע למשחק -->
+<div id="floating-counter" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 bg-white/80 backdrop-blur-md px-6 py-2 rounded-full shadow-lg border-2 border-sky-200 text-3xl font-bold text-sky-900 print-hide">
+    <span id="counter-display">0</span>/13
 </div>
 
 <script>
@@ -257,9 +263,13 @@ let clickCount = 0;
 
 function setGameMode(active) {
     const container = document.getElementById("music-layer");
+    const counter = document.getElementById("floating-counter");
     if (container) {
         container.style.pointerEvents = active ? "auto" : "none";
         container.style.display = active ? "block" : "none";
+    }
+    if (counter) {
+        counter.style.display = active ? "block" : "none";
     }
 }
 
@@ -274,21 +284,18 @@ function catchItem(el, isInstrument) {
         clickCount++;
         if (counterDisplay) {
             counterDisplay.style.color = "#0284c7";
-            counterDisplay.style.transform = "scale(1.4) rotate(" + (Math.random() * 20 - 10) + "deg)";
         }
     } else {
         el.classList.add("caught-bad");
         clickCount = Math.max(0, clickCount - 1);
         if (counterDisplay) {
             counterDisplay.style.color = "#ef4444";
-            counterDisplay.style.transform = "scale(0.8) rotate(" + (Math.random() * -20) + "deg)";
         }
     }
     
     if (counterDisplay) {
-        counterDisplay.innerText = clickCount + "/13";
+        counterDisplay.innerText = clickCount;
         setTimeout(() => {
-            counterDisplay.style.transform = "scale(1) rotate(0deg)";
             counterDisplay.style.color = "#0c4a6e";
         }, 200);
     }
@@ -344,7 +351,7 @@ function showCustomAlert(msg, elementIdToInsertAfter) {
     if (existingAlert) existingAlert.remove();
     const alertDiv = document.createElement("div");
     alertDiv.id = "custom-alert";
-    alertDiv.className = "bg-red-100 text-red-700 p-3 rounded-lg border border-red-300 text-sm font-bold mt-2 animate-pulse";
+    alertDiv.className = "bg-red-100 text-red-700 p-2 rounded-lg border border-red-300 text-xs font-bold mt-1 animate-pulse";
     alertDiv.innerText = msg;
     const target = document.getElementById(elementIdToInsertAfter);
     if(target) target.appendChild(alertDiv);
@@ -356,34 +363,24 @@ function showCustomAlert(msg, elementIdToInsertAfter) {
 function renderEntry() {
     clickCount = 0;
     setGameMode(true);
-    const html = `
-        <div class="space-y-6 py-6" id="game-intro">
-            <h1 class="text-4xl sm:text-5xl font-bold text-sky-800 mb-4">מזל טוב להדס נריה!</h1>
-            <p class="text-xl text-gray-700 font-medium mb-2">כדי לפתוח את המתנה, עליך לתפוס <br/><span class="text-pink-500 font-bold text-4xl">13</span> כלי נגינה אמיתיים!</p>
-            <div class="text-6xl mb-2 font-bold text-sky-900 transition-all duration-200 inline-block" id="counter-display">0/13</div>
-            <p class="text-lg text-sky-600 font-medium">לחץ על כלי הנגינה המעופפים (גיטרות, תופים, פסנתרים...)</p>
-            <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 mt-2">
-                <p class="text-md text-red-600 font-bold">זהירות מהמכשולים!</p>
-                <p class="text-sm text-red-500 font-medium mt-1">לחיצה על תווים, כלי עבודה או חפצים לא קשורים תוריד לך נקודה אחורה!</p>
-            </div>
-        </div>
-    `;
-    renderStep(html);
+    document.getElementById("app").style.display = "none"; // מסתיר את המסגרת המרכזית כדי שייראו רק את המשחק
+    const counterDisplay = document.getElementById("counter-display");
+    if (counterDisplay) counterDisplay.innerText = "0";
 }
 
 function renderWelcome() {
     const html = `
-        <div class="space-y-6">
-            <h1 class="text-4xl sm:text-5xl font-bold text-sky-800 mb-2">מזל טוב להדס נריה פלד!</h1>
-            <h2 class="text-2xl text-sky-600 font-medium">לרגל הגעתך לגיל מצוות</h2>
-            <div class="bg-white/60 rounded-2xl p-6 shadow-inner text-lg leading-relaxed border border-white my-6">
-                <p class="mb-4">קיבלת שובר מתנה מיוחד המקנה לך <strong class="text-sky-700">3 חודשים של שיעורי מוזיקה</strong> (4 שיעורים בחודש)!</p>
-                <p class="mb-4">המועד יקבע מראש בהתאם לפניות שלך.</p>
-                <p>במידה ותבחר בשיעורי נגינה (פסנתר, גיטרות לסוגיהן או יוקליילי), יינתן לך כלי בהשאלה לתקופת הלימודים במידת הצורך.</p>
+        <div class="space-y-4">
+            <h1 class="text-3xl font-bold text-sky-800 mb-1">מזל טוב להדס נריה פלד!</h1>
+            <h2 class="text-xl text-sky-600 font-medium">לרגל הגעתך לגיל מצוות</h2>
+            <div class="bg-white/60 rounded-2xl p-4 shadow-inner text-base leading-relaxed border border-white my-3">
+                <p class="mb-2">קיבלת שובר מתנה מיוחד המקנה לך <strong class="text-sky-700">3 חודשים של שיעורי מוזיקה</strong> (4 שיעורים בחודש)!</p>
+                <p class="mb-2">המועד יקבע מראש בהתאם לפניות שלך.</p>
+                <p class="text-sm">במידה ותבחר בשיעורי נגינה, יינתן לך כלי בהשאלה לתקופת הלימודים במידת הצורך.</p>
             </div>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                <button onclick="goToStep('quiz1')" class="btn-rainbow px-8 py-4 rounded-full text-xl flex-1">עזור לי לבחור מה מתאים לי 🪄</button>
-                <button onclick="goToStep('courses')" class="bg-white hover:bg-gray-50 text-sky-700 border-2 border-sky-200 px-8 py-4 rounded-full text-xl font-semibold transition-all flex-1 shadow-md hover:shadow-lg">אני כבר יודע מה אני רוצה! 🎸</button>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center mt-4">
+                <button onclick="goToStep('quiz1')" class="btn-rainbow px-6 py-3 rounded-full text-lg flex-1">עזור לי לבחור מה מתאים לי 🪄</button>
+                <button onclick="goToStep('courses')" class="bg-white hover:bg-gray-50 text-sky-700 border-2 border-sky-200 px-6 py-3 rounded-full text-lg font-semibold transition-all flex-1 shadow-md">אני כבר יודע מה אני רוצה! 🎸</button>
             </div>
         </div>
     `;
@@ -395,18 +392,18 @@ function renderQuiz1() {
     let optionsHtml = activities.map(act => `
         <label class="custom-radio cursor-pointer block">
             <input type="radio" name="activity" value="${act}" class="hidden" onchange="state.answers.activity = this.value">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-lg hover:border-yellow-300">${act}</div>
+            <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-md hover:border-yellow-300">${act}</div>
         </label>
     `).join("");
     
     const html = `
-        <div class="space-y-6" id="quiz1-container">
-            <h2 class="text-3xl font-bold text-sky-800">שאלה 1 מתוך 3</h2>
-            <h3 class="text-xl text-gray-700">מה הכי היית רוצה לעשות? (בחר אחד)</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-right mt-6">${optionsHtml}</div>
-            <div class="mt-8 flex justify-between">
-                <button onclick="goToStep('welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('quiz2', state.answers.activity !== '', 'אנא בחר אפשרות אחת כדי להמשיך', 'quiz1-container')" class="btn-rainbow px-8 py-3 rounded-full text-lg">המשך</button>
+        <div class="space-y-4" id="quiz1-container">
+            <h2 class="text-2xl font-bold text-sky-800">שאלה 1 מתוך 3</h2>
+            <h3 class="text-lg text-gray-700">מה הכי היית רוצה לעשות? (בחר אחד)</h3>
+            <div class="grid grid-cols-1 gap-2 text-right mt-3">${optionsHtml}</div>
+            <div class="mt-6 flex justify-between">
+                <button onclick="goToStep('welcome')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
+                <button onclick="validateAndGo('quiz2', state.answers.activity !== '', 'אנא בחר אפשרות אחת כדי להמשיך', 'quiz1-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">המשך</button>
             </div>
         </div>
     `;
@@ -417,18 +414,18 @@ function renderQuiz2() {
     let optionsHtml = musicStyles.map(style => `
         <label class="custom-checkbox cursor-pointer block">
             <input type="checkbox" value="${style}" class="hidden" ${state.answers.styles.includes(style) ? "checked" : ""} onchange="toggleStyle('${style}')">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-md hover:border-purple-300 text-center">${style}</div>
+            <div class="bg-white border-2 border-sky-100 rounded-xl p-2 transition-all text-sm hover:border-purple-300 text-center">${style}</div>
         </label>
     `).join("");
     
     const html = `
-        <div class="space-y-6" id="quiz2-container">
-            <h2 class="text-3xl font-bold text-sky-800">שאלה 2 מתוך 3</h2>
-            <h3 class="text-xl text-gray-700">אילו סגנונות מוזיקליים אתה הכי אוהב? (אפשר לבחור כמה)</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">${optionsHtml}</div>
-            <div class="mt-8 flex justify-between">
-                <button onclick="goToStep('quiz1')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('quiz3', state.answers.styles.length > 0, 'בחר לפחות סגנון אחד', 'quiz2-container')" class="btn-rainbow px-8 py-3 rounded-full text-lg">המשך</button>
+        <div class="space-y-4" id="quiz2-container">
+            <h2 class="text-2xl font-bold text-sky-800">שאלה 2 מתוך 3</h2>
+            <h3 class="text-lg text-gray-700">אילו סגנונות אתה הכי אוהב? (אפשר לבחור כמה)</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3">${optionsHtml}</div>
+            <div class="mt-6 flex justify-between">
+                <button onclick="goToStep('quiz1')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
+                <button onclick="validateAndGo('quiz3', state.answers.styles.length > 0, 'בחר לפחות סגנון אחד', 'quiz2-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">המשך</button>
             </div>
         </div>
     `;
@@ -446,15 +443,15 @@ function toggleStyle(style) {
 
 function renderQuiz3() {
     const html = `
-        <div class="space-y-6">
-            <h2 class="text-3xl font-bold text-sky-800">שאלה 3 מתוך 3</h2>
-            <h3 class="text-xl text-gray-700">מי הם הזמרים, הזמרות או הלהקות שאתה הכי אוהב לשמוע? אילו שירים?</h3>
-            <div class="mt-6 text-right">
-                <textarea id="artistsText" rows="4" class="w-full bg-white border-2 border-sky-200 rounded-xl p-4 text-lg focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-200 transition-all resize-none" placeholder="לדוגמה: שלמה ארצי, עומר אדם, הביטלס...">${state.answers.favoriteArtists}</textarea>
+        <div class="space-y-4">
+            <h2 class="text-2xl font-bold text-sky-800">שאלה 3 מתוך 3</h2>
+            <h3 class="text-lg text-gray-700">מי הם הזמרים, הזמרות או הלהקות שאתה הכי אוהב?</h3>
+            <div class="mt-3 text-right">
+                <textarea id="artistsText" rows="3" class="w-full bg-white border-2 border-sky-200 rounded-xl p-3 text-base focus:outline-none focus:border-purple-400 resize-none" placeholder="לדוגמה: שלמה ארצי, הביטלס...">${state.answers.favoriteArtists}</textarea>
             </div>
-            <div class="mt-8 flex justify-between items-center">
-                <button onclick="goToStep('quiz2')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="saveTextAndGo('courses')" class="btn-rainbow px-8 py-3 rounded-full text-lg">בוא נבחר שיעורים!</button>
+            <div class="mt-6 flex justify-between items-center">
+                <button onclick="goToStep('quiz2')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
+                <button onclick="saveTextAndGo('courses')" class="btn-rainbow px-6 py-2 rounded-full text-base">בוא נבחר שיעורים!</button>
             </div>
         </div>
     `;
@@ -469,30 +466,30 @@ function saveTextAndGo(nextStep) {
 function renderCourses() {
     let message = "בחר את השיעורים שאתה רוצה ללמוד.";
     if (state.answers.activity !== "") {
-        message = "לפי התשובות שלך, הנה כל האפשרויות. בחר מה שהכי מדבר אליך!";
+        message = "לפי התשובות שלך, הנה האפשרויות המתאימות:";
     }
     
     let optionsHtml = courses.map(course => `
         <label class="custom-checkbox cursor-pointer block text-right">
             <input type="checkbox" value="${course.id}" class="hidden course-cb" ${state.answers.courses.includes(course.id) ? "checked" : ""} onchange="handleCourseSelection(this)">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-lg hover:border-pink-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-base hover:border-pink-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
                 <span class="font-semibold">${course.name}</span>
-                ${course.needsInstrument ? '<span class="text-xs bg-sky-100 text-sky-800 px-2 py-1 rounded-full whitespace-nowrap">אפשרות כלי בהשאלה</span>' : ""}
+                ${course.needsInstrument ? '<span class="text-xs bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full whitespace-nowrap">אפשרות כלי בהשאלה</span>' : ""}
             </div>
         </label>
     `).join("");
 
     const html = `
-        <div class="space-y-6" id="courses-container">
-            <h2 class="text-3xl font-bold text-sky-800">בחירת שיעורים</h2>
-            <p class="text-lg text-gray-700">${message}</p>
-            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded-lg text-sm mb-4">
+        <div class="space-y-4" id="courses-container">
+            <h2 class="text-2xl font-bold text-sky-800">בחירת שיעורים</h2>
+            <p class="text-sm text-gray-700">${message}</p>
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-2 rounded-lg text-xs">
                 * ניתן לבחור עד 2 תחומים לשילוב.
             </div>
-            <div class="space-y-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar pb-4">${optionsHtml}</div>
-            <div class="mt-8 flex justify-between pt-4 border-t border-gray-100">
-                <button onclick="goToStep(state.answers.activity !== '' ? 'quiz3' : 'welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('loanOrSchedule', state.answers.courses.length > 0 && state.answers.courses.length <= 2, 'יש לבחור תחום אחד או שניים', 'courses-container')" class="btn-rainbow px-8 py-3 rounded-full text-lg">המשך</button>
+            <div class="space-y-2 max-h-60 overflow-y-auto pr-1 custom-scrollbar pb-2">${optionsHtml}</div>
+            <div class="mt-4 flex justify-between pt-3 border-t border-gray-100">
+                <button onclick="goToStep(state.answers.activity !== '' ? 'quiz3' : 'welcome')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
+                <button onclick="validateAndGo('loanOrSchedule', state.answers.courses.length > 0 && state.answers.courses.length <= 2, 'יש לבחור תחום אחד או שניים', 'courses-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">המשך</button>
             </div>
         </div>
     `;
@@ -526,22 +523,22 @@ function goToLoanOrSchedule() {
 
 function renderLoan() {
     const html = `
-        <div class="space-y-6" id="loan-container">
-            <h2 class="text-3xl font-bold text-sky-800">השאלת כלי נגינה</h2>
-            <p class="text-lg text-gray-700">בחרת בתחום לימוד שמאפשר קבלת כלי בהשאלה לתקופת הלימודים. <br>האם תצטרך שנשאיל לך כלי?</p>
-            <div class="flex flex-col sm:flex-row gap-4 mt-6">
+        <div class="space-y-4" id="loan-container">
+            <h2 class="text-2xl font-bold text-sky-800">השאלת כלי נגינה</h2>
+            <p class="text-sm text-gray-700">בחרת בתחום לימוד שמאפשר קבלת כלי בהשאלה לתקופת הלימודים. האם תצטרך כלי?</p>
+            <div class="flex flex-col sm:flex-row gap-3 mt-4">
                 <label class="custom-radio cursor-pointer block flex-1">
                     <input type="radio" name="loan" value="yes" class="hidden" ${state.answers.needsLoan === true ? "checked" : ""} onchange="state.answers.needsLoan = true">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-lg hover:border-green-300 text-center">כן, אשמח לכלי בהשאלה</div>
+                    <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-base hover:border-green-300 text-center">כן, אשמח לכלי בהשאלה</div>
                 </label>
                 <label class="custom-radio cursor-pointer block flex-1">
                     <input type="radio" name="loan" value="no" class="hidden" ${state.answers.needsLoan === false ? "checked" : ""} onchange="state.answers.needsLoan = false">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-lg hover:border-red-300 text-center">לא, יש לי כלי משלי</div>
+                    <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-base hover:border-red-300 text-center">לא, יש לי כלי משלי</div>
                 </label>
             </div>
-            <div class="mt-8 flex justify-between">
-                <button onclick="goToStep('courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('schedule', state.answers.needsLoan !== null, 'אנא בחר אם תרצה כלי בהשאלה', 'loan-container')" class="btn-rainbow px-8 py-3 rounded-full text-lg">המשך</button>
+            <div class="mt-6 flex justify-between">
+                <button onclick="goToStep('courses')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
+                <button onclick="validateAndGo('schedule', state.answers.needsLoan !== null, 'אנא בחר אם תרצה כלי בהשאלה', 'loan-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">המשך</button>
             </div>
         </div>
     `;
@@ -553,33 +550,33 @@ function renderSchedule() {
     let daysHtml = days.map(day => `
         <label class="custom-checkbox cursor-pointer block">
             <input type="checkbox" value="${day}" class="hidden schedule-day" ${state.answers.availability.days.includes(day) ? "checked" : ""} onchange="updateDays(this)">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-2 transition-all text-sm text-center">${day}</div>
+            <div class="bg-white border-2 border-sky-100 rounded-xl p-2 transition-all text-xs text-center">${day}</div>
         </label>
     `).join("");
 
     const html = `
-        <div class="space-y-6" id="schedule-container">
-            <h2 class="text-3xl font-bold text-sky-800">תיאום מועדים</h2>
-            <p class="text-lg text-gray-700">באילו ימים ושעות יהיה לך נוח לקיים את השיעורים?</p>
-            <div class="mt-4 text-right">
-                <label class="font-semibold block mb-2">ימים אפשריים (אפשר לסמן כמה):</label>
-                <div class="grid grid-cols-5 gap-2">${daysHtml}</div>
+        <div class="space-y-4" id="schedule-container">
+            <h2 class="text-2xl font-bold text-sky-800">תיאום מועדים</h2>
+            <p class="text-sm text-gray-700">באילו ימים ושעות יהיה לך נוח לקיים את השיעורים?</p>
+            <div class="mt-3 text-right">
+                <label class="font-semibold block mb-1 text-xs">ימים אפשריים:</label>
+                <div class="grid grid-cols-5 gap-1.5">${daysHtml}</div>
             </div>
-            <div class="mt-6 flex gap-4 text-right justify-center items-center flex-wrap bg-white/50 p-4 rounded-xl">
+            <div class="mt-4 flex gap-3 text-right justify-center items-center flex-wrap bg-white/50 p-3 rounded-xl">
                 <div>
-                    <label class="font-semibold block mb-1 text-sm">משעה:</label>
-                    <input type="time" id="start-time" value="${state.answers.availability.startHour}" min="14:00" max="20:00" class="border p-2 rounded-lg" onchange="state.answers.availability.startHour = this.value">
+                    <label class="font-semibold block mb-0.5 text-xs">משעה:</label>
+                    <input type="time" id="start-time" value="${state.answers.availability.startHour}" min="14:00" max="20:00" class="border p-1.5 rounded-lg text-sm" onchange="state.answers.availability.startHour = this.value">
                 </div>
-                <div class="text-xl mt-4">-</div>
+                <div class="text-lg mt-3">-</div>
                 <div>
-                    <label class="font-semibold block mb-1 text-sm">עד שעה:</label>
-                    <input type="time" id="end-time" value="${state.answers.availability.endHour}" min="14:00" max="20:00" class="border p-2 rounded-lg" onchange="state.answers.availability.endHour = this.value">
+                    <label class="font-semibold block mb-0.5 text-xs">עד שעה:</label>
+                    <input type="time" id="end-time" value="${state.answers.availability.endHour}" min="14:00" max="20:00" class="border p-1.5 rounded-lg text-sm" onchange="state.answers.availability.endHour = this.value">
                 </div>
             </div>
-            <div class="text-sm text-gray-500 mt-2">* טווח השעות האפשרי הוא בין 14:00 ל-20:00.</div>
-            <div class="mt-8 flex justify-between pt-4">
-                <button onclick="goToStep(checkNeedsLoan() ? 'loan' : 'courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('summary', state.answers.availability.days.length > 0, 'אנא בחר לפחות יום אחד שנוח לך', 'schedule-container')" class="btn-rainbow px-8 py-3 rounded-full text-lg">סיום והצגת השובר!</button>
+            <div class="text-xs text-gray-500">* טווח השעות: 14:00 - 20:00.</div>
+            <div class="mt-6 flex justify-between pt-2">
+                <button onclick="goToStep(checkNeedsLoan() ? 'loan' : 'courses')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
+                <button onclick="validateAndGo('summary', state.answers.availability.days.length > 0, 'אנא בחר לפחות יום אחד', 'schedule-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">סיום והצגת השובר!</button>
             </div>
         </div>
     `;
@@ -598,41 +595,39 @@ function renderSummary() {
     const selectedCourseNames = state.answers.courses.map(id => courses.find(c => c.id === id).name).join(" ו-");
     let loanText = "";
     if (checkNeedsLoan()) {
-        loanText = state.answers.needsLoan ? "<p class='text-green-600 font-semibold mt-2'>✔️ כולל קבלת כלי בהשאלה לתקופת הלימודים.</p>" : "<p class='text-gray-500 mt-2'>יש לך כלי משלך (אין צורך בהשאלה).</p>";
+        loanText = state.answers.needsLoan ? "<p class='text-green-600 font-semibold mt-1 text-sm'>✔️ כולל קבלת כלי בהשאלה לתקופת הלימודים.</p>" : "<p class='text-gray-500 mt-1 text-sm'>יש לך כלי משלך (אין צורך בהשאלה).</p>";
     }
     const daysText = state.answers.availability.days.join(", ");
     
     const html = `
-        <div class="space-y-6" id="voucher-content">
-            <div class="border-4 border-dashed border-sky-300 rounded-3xl p-8 bg-white/80 relative">
-                <div class="absolute -top-4 -right-4 text-4xl print-hide">🎁</div>
-                <div class="absolute -bottom-4 -left-4 text-4xl print-hide">✨</div>
+        <div class="space-y-4" id="voucher-content">
+            <div class="border-4 border-dashed border-sky-300 rounded-2xl p-5 bg-white/90 relative">
+                <div class="absolute -top-3 -right-3 text-3xl print-hide">🎁</div>
                 
-                <h1 class="text-4xl sm:text-5xl font-bold text-sky-800 mb-2">שובר מתנה</h1>
-                <h2 class="text-2xl text-sky-600 font-medium mb-6">לכבוד הדס נריה פלד - לרגל הבר מצווה!</h2>
+                <h1 class="text-3xl font-bold text-sky-800 mb-1">שובר מתנה</h1>
+                <h2 class="text-lg text-sky-600 font-medium mb-4">לכבוד הדס נריה פלד - לרגל הבר מצווה!</h2>
                 
-                <div class="text-xl leading-relaxed text-gray-800 space-y-4 text-right inline-block mx-auto">
+                <div class="text-base leading-relaxed text-gray-800 space-y-2 text-right inline-block mx-auto">
                     <p>שובר זה מעניק לך מכל הלב:</p>
-                    <p class="font-bold text-2xl text-center bg-sky-100 py-2 rounded-xl text-sky-900 border border-sky-200">
-                        3 חודשים של שיעורי מוזיקה
+                    <p class="font-bold text-xl text-center bg-sky-100 py-1.5 rounded-xl text-sky-900 border border-sky-200">
+                        3 חודשים של שיעורי מוזיקה (4 בשבוע)
                     </p>
-                    <p class="text-center font-medium">(4 שיעורים בחודש)</p>
                     
-                    <div class="mt-6 bg-yellow-50 p-4 rounded-xl border border-yellow-100">
-                        <p><span class="font-semibold">התחומים שבחרת ללמוד:</span> ${selectedCourseNames}</p>
+                    <div class="mt-3 bg-yellow-50 p-3 rounded-xl border border-yellow-100 text-sm">
+                        <p><span class="font-semibold">התחומים שבחרת:</span> ${selectedCourseNames}</p>
                         ${loanText}
-                        <p class="mt-4"><span class="font-semibold">הזמן שנוח לך:</span> בימי ${daysText} <br>בין השעות ${state.answers.availability.startHour} ל-${state.answers.availability.endHour}.</p>
+                        <p class="mt-2"><span class="font-semibold">הזמן שנוח לך:</span> בימי ${daysText} בין ${state.answers.availability.startHour}-${state.answers.availability.endHour}.</p>
                     </div>
                 </div>
                 
-                <div class="mt-8 text-center">
-                    <p class="text-lg font-bold text-sky-800">מאחל לך שנת מצוות משמעותית, מהנה ומלאה במוזיקה!</p>
-                    <p class="text-xl font-bold text-pink-600 mt-2">באהבה, דוד אילן ❤️</p>
+                <div class="mt-4 text-center">
+                    <p class="text-sm font-bold text-sky-800">שנת מצוות מהנה ומלאה במוזיקה!</p>
+                    <p class="text-base font-bold text-pink-600 mt-1">באהבה, דוד אילן ❤️</p>
                 </div>
             </div>
             
-            <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4 print-hide">
-                <button onclick="downloadPDF()" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg transition-transform hover:scale-105 flex items-center justify-center gap-2">
+            <div class="mt-4 flex justify-center print-hide">
+                <button onclick="downloadPDF()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-full text-base font-bold shadow-lg transition-transform hover:scale-105 flex items-center gap-2">
                     <span>הורד כשמירה לטלפון / בוואטסאפ (PDF)</span> 📥
                 </button>
             </div>
@@ -656,11 +651,11 @@ function downloadPDF() {
 
 function triggerConfetti() {
     const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 80; i++) {
         const confetti = document.createElement("div");
         confetti.style.position = "fixed";
-        confetti.style.width = "10px";
-        confetti.style.height = "10px";
+        confetti.style.width = "8px";
+        confetti.style.height = "8px";
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.left = Math.random() * 100 + "vw";
         confetti.style.top = "-10px";
@@ -695,6 +690,14 @@ function goToStep(step) {
     state.currentStep = step;
     window.scrollTo({ top: 0, behavior: "smooth" });
     
+    // מציג את המסגרת המרכזית בכל שלב חוץ מאשר במשחק עצמו
+    const appElement = document.getElementById("app");
+    if (step === "entry") {
+        appElement.style.display = "none";
+    } else {
+        appElement.style.display = "block";
+    }
+
     if (step === "loanOrSchedule") {
         goToLoanOrSchedule();
         return;
