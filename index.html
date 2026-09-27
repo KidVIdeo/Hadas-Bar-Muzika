@@ -27,7 +27,6 @@
             font-family: 'Fredoka', sans-serif;
         }
 
-        /* עיצוב כפתורי קשת בענן */
         .btn-rainbow {
             background: linear-gradient(90deg, 
                 rgba(255,179,186,1) 0%, 
@@ -108,7 +107,7 @@
             height: 100%;
             z-index: 50; 
             overflow: hidden;
-            pointer-events: none; /* המיכל מתעלם מלחיצות כדי לא לחסום כפתורים מתחת */
+            pointer-events: none;
         }
 
         .floating-music {
@@ -121,7 +120,7 @@
             transition: transform 0.2s;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            pointer-events: auto; /* הכלים עצמם כן מקבלים לחיצות */
+            pointer-events: auto;
         }
         
         .floating-music:hover {
@@ -216,6 +215,20 @@
         <div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.5;"></div>
     </div>
 
+    <!-- שכבת הוידאו - נטען ברקע כדי להיות מוכן מיד! -->
+    <!-- הוספנו autoplay=1 לקישור וגם hidden כדי שלא יפריע למשחק -->
+    <div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-8 px-4 print-hide">
+        <div class="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-black flex items-center justify-center">
+            <iframe id="local-video-player" src="https://drive.google.com/file/d/16-r46rJcO5ZAvAuPQOfVmXfKrmrKiXjf/preview" class="w-full h-full border-0" allow="autoplay" allowfullscreen></iframe>
+        </div>
+        <div class="mt-8 text-center">
+            <h2 class="text-3xl font-bold text-sky-800 mb-6 drop-shadow-md">כל הכבוד! תפסת 13 כלי נגינה! 🎉</h2>
+            <button onclick="startApp()" class="btn-rainbow px-10 py-4 rounded-full text-2xl shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
+                ברוך הבא לעולם המוזיקה!
+            </button>
+        </div>
+    </div>
+
     <div class="music-bg-container print-hide" id="music-layer">
         <!-- כלי נגינה (אמיתיים - מזכים בנקודה) -->
         <div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation: floatUp1 4.5s linear infinite; animation-delay: 0s;">🎸</div>
@@ -237,28 +250,12 @@
         <div class="floating-music" onclick="catchItem(this, false)" style="left: 20%; animation: floatUp2 3.7s linear infinite; animation-delay: -1.5s;">📚</div>
     </div>
     
-    <!-- חלון הניצחון ונגן הוידאו מ-Google Drive -->
-    <div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-8 px-4 print-hide">
-        <div class="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-black flex items-center justify-center">
-            
-            <iframe id="local-video-player" src="https://drive.google.com/file/d/16-r46rJcO5ZAvAuPQOfVmXfKrmrKiXjf/preview" class="w-full h-full border-0" allow="autoplay" allowfullscreen></iframe>
-
-        </div>
-        <div class="mt-8 text-center">
-            <h2 class="text-3xl font-bold text-sky-800 mb-6 drop-shadow-md">כל הכבוד! תפסת 13 כלי נגינה! 🎉</h2>
-            <button onclick="startApp()" class="btn-rainbow px-10 py-4 rounded-full text-2xl shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
-                ברוך הבא לעולם המוזיקה!
-            </button>
-        </div>
-    </div>
-
     <!-- מיכל האפליקציה המרכזי -->
     <div id="app" class="app-container w-full max-w-3xl mx-auto rounded-3xl shadow-2xl p-6 sm:p-10 text-center relative z-10">
         <!-- התוכן יוזרק על ידי JavaScript -->
     </div>
 
     <script>
-        // שימוש באובייקטים ללא גרשיים בעייתיים מגן מפני תקלות קוד
         const courses = [
             { id: "piano", name: "פסנתר", needsInstrument: true },
             { id: "vocals", name: "שירה ופיתוח קול", needsInstrument: false },
@@ -366,7 +363,7 @@
             winScreen.classList.remove('hidden');
             winScreen.classList.add('flex');
             
-            // מוסיף פקודת הפעלה אוטומטית לנגן גוגל דרייב
+            // הוספת פקודת הפעלה אוטומטית לקליפ ברגע הניצחון
             const iframe = document.getElementById('local-video-player');
             if (!iframe.src.includes('autoplay=1')) {
                 iframe.src = iframe.src + '?autoplay=1';
