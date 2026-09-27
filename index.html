@@ -101,6 +101,7 @@
             100% { left: 100vw; }
         }
 
+        /* אלמנטים במשחק */
         .music-bg-container {
             position: fixed;
             top: 0;
@@ -163,6 +164,7 @@
             100% { margin-left: 50px; }
         }
 
+        /* עיצוב כללי לאפליקציה */
         .app-container {
             position: relative;
             z-index: 10;
@@ -172,7 +174,6 @@
             transition: all 0.5s ease;
         }
 
-        /* Checkbox and Radio Button Styling */
         .custom-checkbox input:checked + div {
             background: linear-gradient(90deg, rgba(186,225,255,1) 0%, rgba(220,186,255,1) 100%);
             border-color: #8b5cf6;
@@ -186,7 +187,6 @@
             font-weight: bold;
         }
 
-        /* מעברי מסכים */
         .fade-enter { opacity: 0; transform: scale(0.95); }
         .fade-enter-active {
             opacity: 1;
@@ -198,7 +198,7 @@
         #local-video-player {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* יתאים את הוידאו למסגרת */
+            object-fit: cover;
             pointer-events: auto;
         }
 
@@ -217,7 +217,7 @@
         }
     </style>
 </head>
-<body class="p-4 sm:p-8" dir="rtl">
+<body class="p-4 sm:p-8">
 
     <!-- רקע עננים -->
     <div class="clouds-container print-hide">
@@ -229,39 +229,38 @@
 
     <!-- שכבת המשחק -->
     <div class="music-bg-container print-hide" id="music-layer">
-        <!-- ==== דברים טובים: כלי נגינה (זזים די מהר כדי לאתגר) ==== -->
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation-duration: 4.5s; animation-delay: 0s;">🎸</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 25%; animation-duration: 5s; animation-delay: -1s;">🎹</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 45%; animation-duration: 4s; animation-delay: -2s;">🥁</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 65%; animation-duration: 5.5s; animation-delay: -3s;">🎷</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 80%; animation-duration: 4.2s; animation-delay: -1.5s;">🎺</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 15%; animation-duration: 4.8s; animation-delay: -2.5s;">🎻</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 55%; animation-duration: 5.2s; animation-delay: -0.5s;">🎸</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 85%; animation-duration: 4.6s; animation-delay: -4s;">🎹</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 35%; animation-duration: 4.3s; animation-delay: -3.5s;">🥁</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 50%; animation-duration: 4.9s; animation-delay: -1.8s;">🎷</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 90%; animation-duration: 5.1s; animation-delay: -2.2s;">🎻</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 20%; animation-duration: 4.1s; animation-delay: -0.8s;">🎺</div>
+        <!-- ==== דברים טובים: כלי נגינה (זזים קצת יותר לאט) ==== -->
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation-duration: 5.5s; animation-delay: 0s;">🎸</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 25%; animation-duration: 6s; animation-delay: -1s;">🎹</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 45%; animation-duration: 5s; animation-delay: -2s;">🥁</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 65%; animation-duration: 6.5s; animation-delay: -3s;">🎷</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 80%; animation-duration: 5.2s; animation-delay: -1.5s;">🎺</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 15%; animation-duration: 5.8s; animation-delay: -2.5s;">🎻</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 55%; animation-duration: 6.2s; animation-delay: -0.5s;">🎸</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 85%; animation-duration: 5.6s; animation-delay: -4s;">🎹</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 35%; animation-duration: 5.3s; animation-delay: -3.5s;">🥁</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 50%; animation-duration: 5.9s; animation-delay: -1.8s;">🎷</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 90%; animation-duration: 6.1s; animation-delay: -2.2s;">🎻</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 20%; animation-duration: 5.1s; animation-delay: -0.8s;">🎺</div>
 
-        <!-- ==== דברים רעים: תווים מוזיקליים וחפצים (זזים מהר יותר כדי לבלבל) ==== -->
+        <!-- ==== דברים רעים: תווים, חפצים, כלי עבודה (זזים מהר יותר) ==== -->
         <div class="floating-music" onclick="catchItem(this, false)" style="left: 10%; animation-duration: 3.5s; animation-delay: -1s;">🎵</div>
         <div class="floating-music" onclick="catchItem(this, false)" style="left: 30%; animation-duration: 3.8s; animation-delay: -2.5s;">🔨</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 50%; animation-duration: 3.2s; animation-delay: -0.5s;">🎼</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 50%; animation-duration: 3.2s; animation-delay: -0.5s;">🔧</div>
         <div class="floating-music" onclick="catchItem(this, false)" style="left: 70%; animation-duration: 3.6s; animation-delay: -3s;">⚽</div>
         <div class="floating-music" onclick="catchItem(this, false)" style="left: 90%; animation-duration: 3.9s; animation-delay: -1.5s;">🎶</div>
         <div class="floating-music" onclick="catchItem(this, false)" style="left: 40%; animation-duration: 3.4s; animation-delay: -4s;">✂️</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 60%; animation-duration: 3.7s; animation-delay: -2s;">🎵</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 60%; animation-duration: 3.7s; animation-delay: -2s;">✏️</div>
         <div class="floating-music" onclick="catchItem(this, false)" style="left: 80%; animation-duration: 3.3s; animation-delay: -1.2s;">🍔</div>
         <div class="floating-music" onclick="catchItem(this, false)" style="left: 18%; animation-duration: 3.5s; animation-delay: -3.5s;">📚</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 88%; animation-duration: 3.8s; animation-delay: -0.8s;">🗑️</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 88%; animation-duration: 3.8s; animation-delay: -0.8s;">🍎</div>
     </div>
     
     <!-- מסך ניצחון וסרטון מקומי (מוסתר בהתחלה) -->
     <div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/80 backdrop-blur-sm flex-col items-center justify-between py-10 px-4 print-hide">
         <div class="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-black mt-4 flex items-center justify-center">
             
-            <!-- וידאו HTML5 מקומי -->
-            <!-- חשוב: ודא שקובץ הוידאו שלך נקרא "kidd-video.mp4" ונמצא באותה תיקייה בגיטהאב -->
+            <!-- וידאו HTML5 מקומי מגיטהאב -->
             <video id="local-video-player" controls playsinline>
                 <source src="kidd-video.mp4" type="video/mp4">
                 <p class="text-white">הדפדפן שלך אינו תומך בהפעלת וידאו.</p>
@@ -332,19 +331,19 @@
             const counterDisplay = document.getElementById('counter-display');
             
             if (isInstrument) {
-                // לחיצה טובה - עלה ניקוד
+                // לחיצה טובה - כלי נגינה
                 el.classList.add('caught-good');
                 clickCount++;
                 if (counterDisplay) {
-                    counterDisplay.style.color = '#0284c7'; 
+                    counterDisplay.style.color = '#0284c7'; // צבע תכלת-כחול חיובי
                     counterDisplay.style.transform = 'scale(1.4) rotate(' + (Math.random() * 20 - 10) + 'deg)';
                 }
             } else {
-                // לחיצה שגויה - ירידה בניקוד
+                // לחיצה שגויה - חפץ / תו
                 el.classList.add('caught-bad');
                 clickCount = Math.max(0, clickCount - 1); 
                 if (counterDisplay) {
-                    counterDisplay.style.color = '#ef4444'; 
+                    counterDisplay.style.color = '#ef4444'; // צבע אדום שגיאה
                     counterDisplay.style.transform = 'scale(0.8) rotate(' + (Math.random() * -20) + 'deg)';
                 }
             }
@@ -357,7 +356,7 @@
                 }, 200);
             }
             
-            // בדיקת ניצחון - ברגע שמגיע ל-13 מפעיל את הוידאו
+            // בדיקת ניצחון
             if (clickCount >= 13) {
                 triggerWin(); 
             }
@@ -375,7 +374,7 @@
             winScreen.classList.remove('hidden');
             winScreen.classList.add('flex');
             
-            // הפעלת הוידאו המקומי המובנה בדפדפן
+            // הפעלת הוידאו המקומי
             const videoPlayer = document.getElementById('local-video-player');
             if (videoPlayer) {
                 videoPlayer.play().catch(function(error) {
@@ -385,7 +384,7 @@
         }
         
         function startApp() {
-            // עצירת הוידאו המקומי כשהוא ממשיך לאפליקציה
+            // עצירת הוידאו
             const videoPlayer = document.getElementById('local-video-player');
             if (videoPlayer) {
                 videoPlayer.pause();
@@ -442,7 +441,7 @@
                     <p class="text-xl text-sky-600 font-medium mt-4">לחץ מהר על כלי הנגינה (גיטרות, תופים, פסנתרים...)</p>
                     <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 mt-4">
                         <p class="text-lg text-red-600 font-bold animate-pulse">זהירות!</p>
-                        <p class="text-md text-red-500 font-medium mt-1">לחיצה על תווים, כלי עבודה, חפצים או אוכל – תוריד לך נקודות!</p>
+                        <p class="text-md text-red-500 font-medium mt-1">לחיצה על תווים, כלי עבודה, ציוד בית ספר או אוכל – תוריד לך נקודות!</p>
                     </div>
                 </div>
             `;
