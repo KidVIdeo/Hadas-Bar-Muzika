@@ -7,7 +7,6 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Varela+Round&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <style>
 body {
     font-family: 'Varela Round', sans-serif;
@@ -43,7 +42,6 @@ h1, h2, h3, .font-bold, .font-semibold {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
-
 .clouds-container {
     position: fixed;
     top: 0;
@@ -80,7 +78,6 @@ h1, h2, h3, .font-bold, .font-semibold {
     0% { left: -200px; }
     100% { left: 100vw; }
 }
-
 .music-bg-container {
     position: fixed;
     top: 0;
@@ -104,9 +101,8 @@ h1, h2, h3, .font-bold, .font-semibold {
     -webkit-tap-highlight-color: transparent;
     pointer-events: auto;
 }
-.floating-music:hover {
+.floating-music:active {
     transform: scale(1.2);
-    filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.3));
 }
 .caught-good {
     animation: catchGoodAnim 0.3s forwards !important;
@@ -132,14 +128,13 @@ h1, h2, h3, .font-bold, .font-semibold {
     90% { opacity: 0.9; }
     100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
 }
-
 .app-container {
     position: relative;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    transition: all 0.5s ease;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.4s ease;
 }
 .custom-checkbox input:checked + div {
     background: linear-gradient(90deg, rgba(186,225,255,1) 0%, rgba(220,186,255,1) 100%);
@@ -181,51 +176,36 @@ h1, h2, h3, .font-bold, .font-semibold {
     <div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.5;"></div>
 </div>
 
-<!-- מיכל דינמי למשחק -->
 <div class="music-bg-container print-hide" id="music-layer"></div>
 
-<!-- מסך הניצחון והוידאו -->
-<div id="win-screen" class="hidden fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-6 px-4 print-hide overflow-y-auto">
+<!-- מסך ניצחון והפעלת וידאו קבוע -->
+<div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-6 px-4 print-hide">
+    <h2 class="text-3xl sm:text-4xl font-bold text-sky-800 mb-6 drop-shadow-md text-center">כל הכבוד! 🎉<br>תפסת את כל הכלים!</h2>
     
-    <div class="text-center w-full max-w-3xl mx-auto mb-4 mt-8">
-        <h2 class="text-4xl sm:text-5xl font-bold text-sky-800 drop-shadow-md mb-2">כל הכבוד! 🎉</h2>
-        <p class="text-xl sm:text-2xl text-gray-700 font-medium">
-            תפסת את כל הכלים!<br>לחץ על הפליי (▶) כדי לצפות בהפתעה שלך:
-        </p>
-    </div>
-
-    <!-- נגן וידאו מותאם אישית: מקובע לגודל 16:9 ועם כפתור פליי ענק -->
-    <div class="w-full max-w-3xl mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative aspect-video my-4 flex items-center justify-center group" id="video-container">
-        
-        <video id="local-video-player" playsinline class="absolute inset-0 w-full h-full object-contain">
-            <source src="kidd-video.mp4" type="video/mp4">
+    <div class="w-full max-w-2xl bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative aspect-video flex items-center justify-center group" onclick="playRewardVideo()">
+        <video id="local-video-player" playsinline preload="auto" class="w-full h-full object-contain">
+            <source src="Kidd-Video.mp4" type="video/mp4">
             הדפדפן שלך אינו תומך בהפעלת וידאו.
         </video>
-        
-        <!-- כפתור הפליי הענק שמכריח את הדפדפן להתחיל ניגון -->
-        <div id="custom-play-overlay" class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer bg-black/30 hover:bg-black/10 transition-all" onclick="playMyVideo()">
-            <div class="bg-white/90 text-sky-600 rounded-full w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.6)] transform transition-transform hover:scale-110 mb-4">
-                <svg class="w-12 h-12 sm:w-16 sm:h-16 ml-2" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
+        <!-- כפתור Play ענק מובנה -->
+        <div id="play-btn-overlay" class="absolute inset-0 flex items-center justify-center bg-black/40 cursor-pointer hover:bg-black/20 transition-colors">
+            <div class="w-24 h-24 bg-white/90 rounded-full flex items-center justify-center text-6xl pl-3 text-sky-800 shadow-lg transform group-hover:scale-110 transition-transform">
+                ▶
             </div>
-            <span class="text-white text-xl font-bold bg-black/60 px-6 py-2 rounded-full shadow-lg">לחץ כאן לצפייה!</span>
         </div>
-
     </div>
     
-    <div class="mt-4 mb-8 text-center w-full max-w-3xl mx-auto">
-        <button onclick="goToStep('welcome')" class="btn-rainbow px-10 py-4 rounded-full text-2xl font-bold shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
-            המשך לקבלת השובר 🎁
+    <div class="mt-8 text-center w-full">
+        <button onclick="continueAfterVideo()" class="btn-rainbow px-10 py-3 rounded-full text-xl shadow-xl hover:scale-105 transition-transform duration-300 w-full sm:w-auto font-bold text-sky-900 border-2 border-white">
+            המשך לקבלת השובר!
         </button>
     </div>
-
 </div>
 
-<!-- מסך הוראות נקי שיופיע לפני המשחק -->
-<div id="app" class="app-container w-full max-w-xl mx-auto rounded-3xl shadow-2xl p-4 sm:p-6 text-center relative z-10" style="display:none;">
+<div id="app" class="app-container w-full max-w-xl mx-auto rounded-3xl shadow-2xl p-6 sm:p-8 text-center relative z-10">
 </div>
 
-<!-- מונה נקודות צף של המשחק (נסתר בהתחלה) -->
-<div id="floating-counter" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 bg-white/90 backdrop-blur-md px-6 py-2 rounded-full shadow-lg border-2 border-sky-200 text-3xl font-bold text-sky-900 print-hide hidden">
+<div id="floating-counter" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 bg-white/90 backdrop-blur-md px-8 py-3 rounded-full shadow-lg border-2 border-sky-300 text-4xl font-bold text-sky-900 print-hide" style="display:none;">
     <span id="counter-display">0</span>/13
 </div>
 
@@ -267,7 +247,7 @@ const gameItems = [
 ];
 
 let state = {
-    currentStep: "intro", // מתחילים ממסך ההוראות ולא מהמשחק ישר
+    currentStep: "intro",
     answers: {
         activity: "",
         styles: [],
@@ -285,33 +265,24 @@ let state = {
 let clickCount = 0;
 let spawnerInterval = null;
 
-// האזנה לשגיאות בוידאו כדי לדעת אם הקובץ באמת חסר
-window.addEventListener('DOMContentLoaded', () => {
-    const vid = document.getElementById("local-video-player");
-    if(vid) {
-        vid.addEventListener('error', function(e) {
-            console.error("Video Error:", e);
-            alert("שגיאה מגיטהאב: לא מצאתי את קובץ הוידאו! אנא ודא שהעלית את הקובץ בדיוק בשם kidd-video.mp4 (אותיות קטנות וללא רווחים) לאותה התיקייה של האתר.");
-        }, true);
-    }
-});
-
-// פונקציית הפעלת הוידאו המותאמת אישית
-function playMyVideo() {
-    const vid = document.getElementById("local-video-player");
-    const overlay = document.getElementById("custom-play-overlay");
-    
-    vid.play().then(() => {
-        overlay.style.display = 'none'; // מעלים את הכפתור הענק שלנו
-        vid.setAttribute("controls", "controls"); // מפעיל את כפתורי הוידאו הרגילים למקרה שירצה לעצור
-    }).catch(err => {
-        console.error("Video play failed:", err);
-        alert("הדפדפן חסם את ההפעלה. ייתכן שקובץ הוידאו לא קיים בשרת בנתיב הנכון.");
-        vid.setAttribute("controls", "controls");
-        overlay.style.display = 'none';
-    });
+function renderIntro() {
+    const html = `
+        <div class="space-y-6 py-4">
+            <h1 class="text-4xl font-bold text-sky-800 mb-2">מזל טוב להדס נריה!</h1>
+            <div class="bg-sky-50 p-6 rounded-2xl border-2 border-sky-200 text-lg text-gray-800">
+                <p class="mb-4">כדי לפתוח את השובר המיוחד שלך, עליך לשחק במשחק קצר:</p>
+                <p class="font-bold text-2xl text-sky-700 mb-4">תפוס 13 כלי נגינה אמיתיים!</p>
+                <p class="text-sm text-red-600 font-bold bg-red-100 p-3 rounded-xl inline-block border border-red-200">
+                    זהירות: לחיצה על חפצים אחרים ותווים תוריד לך נקודות!
+                </p>
+            </div>
+            <button onclick="goToStep('entry')" class="btn-rainbow px-10 py-4 rounded-full text-2xl shadow-xl hover:scale-105 transition-transform w-full sm:w-auto font-bold border-2 border-white">
+                התחל במשחק!
+            </button>
+        </div>
+    `;
+    renderStep(html);
 }
-
 
 function setGameMode(active) {
     const container = document.getElementById("music-layer");
@@ -321,13 +292,10 @@ function setGameMode(active) {
         container.style.display = active ? "block" : "none";
     }
     if (counter) {
-        // מראה את המונה רק כשהמשחק פעיל
         counter.style.display = active ? "block" : "none";
     }
 
     if (active) {
-        clickCount = 0;
-        document.getElementById("counter-display").innerText = "0";
         startSpawner();
     } else {
         stopSpawner();
@@ -340,14 +308,12 @@ function startSpawner() {
     if (!container) return;
     container.innerHTML = "";
 
-    // פריסה התחלתית עשירה
     for (let i = 0; i < 15; i++) {
         spawnFloatingItem();
     }
 
-    // ייצור מתמיד שמונע מהכלים להיגמר
     spawnerInterval = setInterval(() => {
-        if (state.currentStep === "game" && clickCount < 13) {
+        if (state.currentStep === "entry" && clickCount < 13) {
             spawnFloatingItem();
             spawnFloatingItem();
         }
@@ -359,28 +325,25 @@ function stopSpawner() {
         clearInterval(spawnerInterval);
         spawnerInterval = null;
     }
-    const container = document.getElementById("music-layer");
-    if (container) container.innerHTML = "";
 }
 
 function spawnFloatingItem() {
     const container = document.getElementById("music-layer");
-    if (!container || state.currentStep !== "game") return;
+    if (!container || state.currentStep !== "entry") return;
 
     const itemData = gameItems[Math.floor(Math.random() * gameItems.length)];
     const el = document.createElement("div");
     el.className = "floating-music";
     el.innerText = itemData.emoji;
     
-    const randomLeft = Math.floor(Math.random() * 90) + 2;
-    const duration = Math.random() * 2 + 3.5;
+    const randomLeft = Math.floor(Math.random() * 85) + 5;
+    const duration = Math.random() * 2 + 3.5; 
     
     el.style.left = randomLeft + "%";
     el.style.animationDuration = duration + "s";
 
-    // שימוש באירוע מתקדם לניידים שמבטיח לכידה מהירה!
     el.onpointerdown = function(e) {
-        e.preventDefault();
+        e.preventDefault(); 
         catchItem(el, itemData.isInst);
     };
 
@@ -394,7 +357,7 @@ function spawnFloatingItem() {
 }
 
 function catchItem(el, isInstrument) {
-    if (state.currentStep !== "game" || clickCount >= 13) return;
+    if (state.currentStep !== "entry" || clickCount >= 13) return;
     if (el.classList.contains("caught-good") || el.classList.contains("caught-bad")) return;
     
     const counterDisplay = document.getElementById("counter-display");
@@ -402,15 +365,11 @@ function catchItem(el, isInstrument) {
     if (isInstrument) {
         el.classList.add("caught-good");
         clickCount++;
-        if (counterDisplay) {
-            counterDisplay.style.color = "#0284c7";
-        }
+        if (counterDisplay) counterDisplay.style.color = "#0284c7";
     } else {
         el.classList.add("caught-bad");
         clickCount = Math.max(0, clickCount - 1);
-        if (counterDisplay) {
-            counterDisplay.style.color = "#ef4444";
-        }
+        if (counterDisplay) counterDisplay.style.color = "#ef4444";
     }
     
     if (counterDisplay) {
@@ -421,24 +380,43 @@ function catchItem(el, isInstrument) {
     }
     
     if (clickCount >= 13) {
-        triggerWin();
+        setTimeout(triggerWin, 300);
     }
 }
 
 function triggerWin() {
-    setGameMode(false); // מכבה את המשחק
-    document.getElementById("app").style.display = "none"; // מסתיר את החלון
-    
+    setGameMode(false);
+    document.getElementById("app").style.display = "none";
     const winScreen = document.getElementById("win-screen");
     winScreen.classList.remove("hidden");
     winScreen.classList.add("flex");
+}
+
+function playRewardVideo() {
+    const videoPlayer = document.getElementById("local-video-player");
+    const playBtnOverlay = document.getElementById("play-btn-overlay");
     
-    // מכין את הוידאו ללחיצה, בלי לנסות להפעיל אותו אוטומטית ולשבור את הדפדפן
+    if (videoPlayer) {
+        videoPlayer.controls = true; 
+        videoPlayer.play().then(() => {
+            if (playBtnOverlay) playBtnOverlay.style.display = "none";
+        }).catch(err => {
+            console.error("שגיאת הפעלה:", err);
+            if (playBtnOverlay) playBtnOverlay.style.display = "none";
+        });
+    }
+}
+
+function continueAfterVideo() {
     const videoPlayer = document.getElementById("local-video-player");
     if (videoPlayer) {
-        videoPlayer.currentTime = 0;
-        videoPlayer.load();
+        videoPlayer.pause();
     }
+    const winScreen = document.getElementById("win-screen");
+    winScreen.classList.add("hidden");
+    winScreen.classList.remove("flex");
+    document.getElementById("app").style.display = "block";
+    goToStep("welcome");
 }
 
 const appDiv = document.getElementById("app");
@@ -469,45 +447,24 @@ function showCustomAlert(msg, elementIdToInsertAfter) {
     }, 3500);
 }
 
-// מסך הוראות נקי - לפני שמתחילים לשחק כדי לא להפריע למסך
-function renderIntro() {
-    const html = `
-        <div class="space-y-6 py-4">
-            <h1 class="text-4xl font-bold text-sky-800 mb-2">מוכן למשחק?</h1>
-            <p class="text-xl text-gray-700 font-medium">כדי לפתוח את המתנה, עליך לתפוס <span class="font-bold text-pink-500 text-3xl">13</span> כלי נגינה אמיתיים!</p>
-            
-            <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-5 text-right space-y-3 mt-4 text-lg shadow-sm">
-                <p>✔️ תפוס רק <strong>כלי נגינה</strong> (🎸, 🎹, 🥁, 🎷...)</p>
-                <p>❌ <strong class="text-red-500 font-bold">זהירות!</strong> תווים, כדורים או חפצים אחרים יורידו לך נקודות!</p>
-            </div>
-            
-            <div class="mt-8 pt-4">
-                <button onclick="goToStep('game')" class="btn-rainbow px-10 py-4 rounded-full text-2xl font-bold shadow-lg w-full sm:w-auto hover:scale-105 transition-transform">
-                    התחל משחק!
-                </button>
-            </div>
-        </div>
-    `;
-    renderStep(html);
+function renderEntry() {
+    clickCount = 0;
+    const counterDisplay = document.getElementById("counter-display");
+    if (counterDisplay) counterDisplay.innerText = "0";
+    setGameMode(true);
 }
 
 function renderWelcome() {
-    // במידה והוידאו מתנגן, צריך לעצור אותו כשממשיכים
-    const videoPlayer = document.getElementById("local-video-player");
-    if (videoPlayer) {
-        videoPlayer.pause();
-    }
-    
     const html = `
         <div class="space-y-4">
-            <h1 class="text-3xl font-bold text-sky-800 mb-1">מזל טוב להדס נריה פלד!</h1>
-            <h2 class="text-xl text-sky-600 font-medium">לרגל הגעתך לגיל מצוות</h2>
-            <div class="bg-white/60 rounded-2xl p-4 shadow-inner text-base leading-relaxed border border-white my-3">
+            <h1 class="text-3xl font-bold text-sky-800 mb-1">ברוך הבא לעולם המוזיקה!</h1>
+            <h2 class="text-xl text-sky-600 font-medium">הדס נריה פלד - לרגל הגעתך לגיל מצוות</h2>
+            <div class="bg-white/60 rounded-2xl p-4 shadow-inner text-base leading-relaxed border border-white my-4">
                 <p class="mb-2">קיבלת שובר מתנה מיוחד המקנה לך <strong class="text-sky-700">3 חודשים של שיעורי מוזיקה</strong> (4 שיעורים בחודש)!</p>
                 <p class="mb-2">המועד יקבע מראש בהתאם לפניות שלך.</p>
                 <p class="text-sm">במידה ותבחר בשיעורי נגינה, יינתן לך כלי בהשאלה לתקופת הלימודים במידת הצורך.</p>
             </div>
-            <div class="flex flex-col sm:flex-row gap-3 justify-center mt-4">
+            <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
                 <button onclick="goToStep('quiz1')" class="btn-rainbow px-6 py-3 rounded-full text-lg flex-1">עזור לי לבחור מה מתאים לי 🪄</button>
                 <button onclick="goToStep('courses')" class="bg-white hover:bg-gray-50 text-sky-700 border-2 border-sky-200 px-6 py-3 rounded-full text-lg font-semibold transition-all flex-1 shadow-md">אני כבר יודע מה אני רוצה! 🎸</button>
             </div>
@@ -529,10 +486,10 @@ function renderQuiz1() {
         <div class="space-y-4" id="quiz1-container">
             <h2 class="text-2xl font-bold text-sky-800">שאלה 1 מתוך 3</h2>
             <h3 class="text-lg text-gray-700">מה הכי היית רוצה לעשות? (בחר אחד)</h3>
-            <div class="grid grid-cols-1 gap-2 text-right mt-3">${optionsHtml}</div>
-            <div class="mt-6 flex justify-between">
-                <button onclick="goToStep('welcome')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
-                <button onclick="validateAndGo('quiz2', state.answers.activity !== '', 'אנא בחר אפשרות אחת כדי להמשיך', 'quiz1-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">המשך</button>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-right mt-4">${optionsHtml}</div>
+            <div class="mt-8 flex justify-between">
+                <button onclick="goToStep('welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+                <button onclick="validateAndGo('quiz2', state.answers.activity !== '', 'אנא בחר אפשרות אחת כדי להמשיך', 'quiz1-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">המשך</button>
             </div>
         </div>
     `;
@@ -543,7 +500,7 @@ function renderQuiz2() {
     let optionsHtml = musicStyles.map(style => `
         <label class="custom-checkbox cursor-pointer block">
             <input type="checkbox" value="${style}" class="hidden" ${state.answers.styles.includes(style) ? "checked" : ""} onchange="toggleStyle('${style}')">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-2 transition-all text-sm hover:border-purple-300 text-center">${style}</div>
+            <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-sm hover:border-purple-300 text-center">${style}</div>
         </label>
     `).join("");
     
@@ -551,10 +508,10 @@ function renderQuiz2() {
         <div class="space-y-4" id="quiz2-container">
             <h2 class="text-2xl font-bold text-sky-800">שאלה 2 מתוך 3</h2>
             <h3 class="text-lg text-gray-700">אילו סגנונות אתה הכי אוהב? (אפשר לבחור כמה)</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3">${optionsHtml}</div>
-            <div class="mt-6 flex justify-between">
-                <button onclick="goToStep('quiz1')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
-                <button onclick="validateAndGo('quiz3', state.answers.styles.length > 0, 'בחר לפחות סגנון אחד', 'quiz2-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">המשך</button>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">${optionsHtml}</div>
+            <div class="mt-8 flex justify-between">
+                <button onclick="goToStep('quiz1')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+                <button onclick="validateAndGo('quiz3', state.answers.styles.length > 0, 'בחר לפחות סגנון אחד', 'quiz2-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">המשך</button>
             </div>
         </div>
     `;
@@ -575,12 +532,12 @@ function renderQuiz3() {
         <div class="space-y-4">
             <h2 class="text-2xl font-bold text-sky-800">שאלה 3 מתוך 3</h2>
             <h3 class="text-lg text-gray-700">מי הם הזמרים, הזמרות או הלהקות שאתה הכי אוהב?</h3>
-            <div class="mt-3 text-right">
-                <textarea id="artistsText" rows="3" class="w-full bg-white border-2 border-sky-200 rounded-xl p-3 text-base focus:outline-none focus:border-purple-400 resize-none" placeholder="לדוגמה: שלמה ארצי, הביטלס...">${state.answers.favoriteArtists}</textarea>
+            <div class="mt-4 text-right">
+                <textarea id="artistsText" rows="3" class="w-full bg-white border-2 border-sky-200 rounded-xl p-4 text-base focus:outline-none focus:border-purple-400 resize-none" placeholder="לדוגמה: שלמה ארצי, הביטלס...">${state.answers.favoriteArtists}</textarea>
             </div>
-            <div class="mt-6 flex justify-between items-center">
-                <button onclick="goToStep('quiz2')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
-                <button onclick="saveTextAndGo('courses')" class="btn-rainbow px-6 py-2 rounded-full text-base">בוא נבחר שיעורים!</button>
+            <div class="mt-8 flex justify-between items-center">
+                <button onclick="goToStep('quiz2')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+                <button onclick="saveTextAndGo('courses')" class="btn-rainbow px-8 py-2 rounded-full text-base">בוא נבחר שיעורים!</button>
             </div>
         </div>
     `;
@@ -612,13 +569,13 @@ function renderCourses() {
         <div class="space-y-4" id="courses-container">
             <h2 class="text-2xl font-bold text-sky-800">בחירת שיעורים</h2>
             <p class="text-sm text-gray-700">${message}</p>
-            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-2 rounded-lg text-xs">
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-2 rounded-lg text-sm">
                 * ניתן לבחור עד 2 תחומים לשילוב.
             </div>
-            <div class="space-y-2 max-h-60 overflow-y-auto pr-1 custom-scrollbar pb-2">${optionsHtml}</div>
-            <div class="mt-4 flex justify-between pt-3 border-t border-gray-100">
-                <button onclick="goToStep(state.answers.activity !== '' ? 'quiz3' : 'welcome')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
-                <button onclick="validateAndGo('loanOrSchedule', state.answers.courses.length > 0 && state.answers.courses.length <= 2, 'יש לבחור תחום אחד או שניים', 'courses-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">המשך</button>
+            <div class="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar pb-2">${optionsHtml}</div>
+            <div class="mt-6 flex justify-between pt-3 border-t border-gray-100">
+                <button onclick="goToStep(state.answers.activity !== '' ? 'quiz3' : 'welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+                <button onclick="validateAndGo('loanOrSchedule', state.answers.courses.length > 0 && state.answers.courses.length <= 2, 'יש לבחור תחום אחד או שניים', 'courses-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">המשך</button>
             </div>
         </div>
     `;
@@ -655,19 +612,19 @@ function renderLoan() {
         <div class="space-y-4" id="loan-container">
             <h2 class="text-2xl font-bold text-sky-800">השאלת כלי נגינה</h2>
             <p class="text-sm text-gray-700">בחרת בתחום לימוד שמאפשר קבלת כלי בהשאלה לתקופת הלימודים. האם תצטרך כלי?</p>
-            <div class="flex flex-col sm:flex-row gap-3 mt-4">
+            <div class="flex flex-col sm:flex-row gap-4 mt-6">
                 <label class="custom-radio cursor-pointer block flex-1">
                     <input type="radio" name="loan" value="yes" class="hidden" ${state.answers.needsLoan === true ? "checked" : ""} onchange="state.answers.needsLoan = true">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-base hover:border-green-300 text-center">כן, אשמח לכלי בהשאלה</div>
+                    <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-base hover:border-green-300 text-center">כן, אשמח לכלי בהשאלה</div>
                 </label>
                 <label class="custom-radio cursor-pointer block flex-1">
                     <input type="radio" name="loan" value="no" class="hidden" ${state.answers.needsLoan === false ? "checked" : ""} onchange="state.answers.needsLoan = false">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-base hover:border-red-300 text-center">לא, יש לי כלי משלי</div>
+                    <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-base hover:border-red-300 text-center">לא, יש לי כלי משלי</div>
                 </label>
             </div>
-            <div class="mt-6 flex justify-between">
-                <button onclick="goToStep('courses')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
-                <button onclick="validateAndGo('schedule', state.answers.needsLoan !== null, 'אנא בחר אם תרצה כלי בהשאלה', 'loan-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">המשך</button>
+            <div class="mt-8 flex justify-between">
+                <button onclick="goToStep('courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+                <button onclick="validateAndGo('schedule', state.answers.needsLoan !== null, 'אנא בחר אם תרצה כלי בהשאלה', 'loan-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">המשך</button>
             </div>
         </div>
     `;
@@ -679,7 +636,7 @@ function renderSchedule() {
     let daysHtml = days.map(day => `
         <label class="custom-checkbox cursor-pointer block">
             <input type="checkbox" value="${day}" class="hidden schedule-day" ${state.answers.availability.days.includes(day) ? "checked" : ""} onchange="updateDays(this)">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-2 transition-all text-xs text-center">${day}</div>
+            <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-sm text-center">${day}</div>
         </label>
     `).join("");
 
@@ -687,25 +644,25 @@ function renderSchedule() {
         <div class="space-y-4" id="schedule-container">
             <h2 class="text-2xl font-bold text-sky-800">תיאום מועדים</h2>
             <p class="text-sm text-gray-700">באילו ימים ושעות יהיה לך נוח לקיים את השיעורים?</p>
-            <div class="mt-3 text-right">
-                <label class="font-semibold block mb-1 text-xs">ימים אפשריים:</label>
-                <div class="grid grid-cols-5 gap-1.5">${daysHtml}</div>
+            <div class="mt-4 text-right">
+                <label class="font-semibold block mb-2 text-sm">ימים אפשריים:</label>
+                <div class="grid grid-cols-5 gap-2">${daysHtml}</div>
             </div>
-            <div class="mt-4 flex gap-3 text-right justify-center items-center flex-wrap bg-white/50 p-3 rounded-xl">
+            <div class="mt-6 flex gap-4 text-right justify-center items-center flex-wrap bg-white/50 p-4 rounded-xl">
                 <div>
-                    <label class="font-semibold block mb-0.5 text-xs">משעה:</label>
-                    <input type="time" id="start-time" value="${state.answers.availability.startHour}" min="14:00" max="20:00" class="border p-1.5 rounded-lg text-sm" onchange="state.answers.availability.startHour = this.value">
+                    <label class="font-semibold block mb-1 text-sm">משעה:</label>
+                    <input type="time" id="start-time" value="${state.answers.availability.startHour}" min="14:00" max="20:00" class="border p-2 rounded-lg text-base" onchange="state.answers.availability.startHour = this.value">
                 </div>
-                <div class="text-lg mt-3">-</div>
+                <div class="text-xl mt-4">-</div>
                 <div>
-                    <label class="font-semibold block mb-0.5 text-xs">עד שעה:</label>
-                    <input type="time" id="end-time" value="${state.answers.availability.endHour}" min="14:00" max="20:00" class="border p-1.5 rounded-lg text-sm" onchange="state.answers.availability.endHour = this.value">
+                    <label class="font-semibold block mb-1 text-sm">עד שעה:</label>
+                    <input type="time" id="end-time" value="${state.answers.availability.endHour}" min="14:00" max="20:00" class="border p-2 rounded-lg text-base" onchange="state.answers.availability.endHour = this.value">
                 </div>
             </div>
-            <div class="text-xs text-gray-500">* טווח השעות: 14:00 - 20:00.</div>
-            <div class="mt-6 flex justify-between pt-2">
-                <button onclick="goToStep(checkNeedsLoan() ? 'loan' : 'courses')" class="text-gray-500 hover:text-gray-800 px-3 py-1 font-bold">חזור</button>
-                <button onclick="validateAndGo('summary', state.answers.availability.days.length > 0, 'אנא בחר לפחות יום אחד', 'schedule-container')" class="btn-rainbow px-6 py-2 rounded-full text-base">סיום והצגת השובר!</button>
+            <div class="text-sm text-gray-500 mt-2">* טווח השעות: 14:00 - 20:00.</div>
+            <div class="mt-8 flex justify-between pt-4 border-t border-gray-100">
+                <button onclick="goToStep(checkNeedsLoan() ? 'loan' : 'courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+                <button onclick="validateAndGo('summary', state.answers.availability.days.length > 0, 'אנא בחר לפחות יום אחד', 'schedule-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">הצג שובר!</button>
             </div>
         </div>
     `;
@@ -724,40 +681,41 @@ function renderSummary() {
     const selectedCourseNames = state.answers.courses.map(id => courses.find(c => c.id === id).name).join(" ו-");
     let loanText = "";
     if (checkNeedsLoan()) {
-        loanText = state.answers.needsLoan ? "<p class='text-green-600 font-semibold mt-1 text-sm'>✔️ כולל קבלת כלי בהשאלה לתקופת הלימודים.</p>" : "<p class='text-gray-500 mt-1 text-sm'>יש לך כלי משלך (אין צורך בהשאלה).</p>";
+        loanText = state.answers.needsLoan ? "<p class='text-green-600 font-semibold mt-2'>✔️ כולל קבלת כלי בהשאלה לתקופת הלימודים.</p>" : "<p class='text-gray-500 mt-2'>יש לך כלי משלך (אין צורך בהשאלה).</p>";
     }
     const daysText = state.answers.availability.days.join(", ");
     
     const html = `
         <div class="space-y-4" id="voucher-content">
-            <div class="border-4 border-dashed border-sky-300 rounded-2xl p-5 bg-white/90 relative">
-                <div class="absolute -top-3 -right-3 text-3xl print-hide">🎁</div>
+            <div class="border-4 border-dashed border-sky-300 rounded-3xl p-6 sm:p-8 bg-white/90 relative">
+                <div class="absolute -top-4 -right-4 text-4xl print-hide">🎁</div>
                 
-                <h1 class="text-3xl font-bold text-sky-800 mb-1">שובר מתנה</h1>
-                <h2 class="text-lg text-sky-600 font-medium mb-4">לכבוד הדס נריה פלד - לרגל הבר מצווה!</h2>
+                <h1 class="text-4xl font-bold text-sky-800 mb-2">שובר מתנה</h1>
+                <h2 class="text-xl text-sky-600 font-medium mb-6">לכבוד הדס נריה פלד - לרגל הבר מצווה!</h2>
                 
-                <div class="text-base leading-relaxed text-gray-800 space-y-2 text-right inline-block mx-auto">
+                <div class="text-lg leading-relaxed text-gray-800 space-y-3 text-right inline-block mx-auto w-full">
                     <p>שובר זה מעניק לך מכל הלב:</p>
-                    <p class="font-bold text-xl text-center bg-sky-100 py-1.5 rounded-xl text-sky-900 border border-sky-200">
-                        3 חודשים של שיעורי מוזיקה (4 בשבוע)
+                    <p class="font-bold text-2xl text-center bg-sky-100 py-2 rounded-xl text-sky-900 border border-sky-200 shadow-sm">
+                        3 חודשים של שיעורי מוזיקה
                     </p>
+                    <p class="text-center font-medium">(4 שיעורים בחודש)</p>
                     
-                    <div class="mt-3 bg-yellow-50 p-3 rounded-xl border border-yellow-100 text-sm">
+                    <div class="mt-6 bg-yellow-50 p-4 rounded-xl border border-yellow-100">
                         <p><span class="font-semibold">התחומים שבחרת:</span> ${selectedCourseNames}</p>
                         ${loanText}
-                        <p class="mt-2"><span class="font-semibold">הזמן שנוח לך:</span> בימי ${daysText} בין ${state.answers.availability.startHour}-${state.answers.availability.endHour}.</p>
+                        <p class="mt-3"><span class="font-semibold">הזמן שנוח לך:</span> בימי ${daysText} <br>בין ${state.answers.availability.startHour} ל-${state.answers.availability.endHour}.</p>
                     </div>
                 </div>
                 
-                <div class="mt-4 text-center">
-                    <p class="text-sm font-bold text-sky-800">שנת מצוות מהנה ומלאה במוזיקה!</p>
-                    <p class="text-base font-bold text-pink-600 mt-1">באהבה, דוד אילן ❤️</p>
+                <div class="mt-6 text-center">
+                    <p class="text-base font-bold text-sky-800">שנת מצוות מהנה ומלאה במוזיקה!</p>
+                    <p class="text-xl font-bold text-pink-600 mt-2">באהבה, דוד אילן ❤️</p>
                 </div>
             </div>
             
-            <div class="mt-4 flex justify-center print-hide">
-                <button onclick="downloadPDF()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-full text-base font-bold shadow-lg transition-transform hover:scale-105 flex items-center gap-2">
-                    <span>הורד כשמירה לטלפון / בוואטסאפ (PDF)</span> 📥
+            <div class="mt-6 flex justify-center print-hide">
+                <button onclick="downloadPDF()" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg transition-transform hover:scale-105 flex items-center gap-2">
+                    <span>הורד כשמירה לטלפון (PDF)</span> 📥
                 </button>
             </div>
         </div>
@@ -780,11 +738,11 @@ function downloadPDF() {
 
 function triggerConfetti() {
     const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 100; i++) {
         const confetti = document.createElement("div");
         confetti.style.position = "fixed";
-        confetti.style.width = "8px";
-        confetti.style.height = "8px";
+        confetti.style.width = "10px";
+        confetti.style.height = "10px";
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.left = Math.random() * 100 + "vw";
         confetti.style.top = "-10px";
@@ -820,11 +778,9 @@ function goToStep(step) {
     window.scrollTo({ top: 0, behavior: "smooth" });
     
     const appElement = document.getElementById("app");
-    
-    // מסתיר את תיבת התוכן המרכזית בזמן המשחק עצמו כדי שיהיה נקי
-    if (step === "game") {
+    if (step === "entry") {
         appElement.style.display = "none";
-        setGameMode(true);
+        renderEntry();
     } else {
         appElement.style.display = "block";
         setGameMode(false);
@@ -837,7 +793,6 @@ function goToStep(step) {
     
     switch (step) {
         case "intro": renderIntro(); break;
-        // case "game": מתבצע על ידי setGameMode למעלה
         case "welcome": renderWelcome(); break;
         case "quiz1": renderQuiz1(); break;
         case "quiz2": renderQuiz2(); break;
@@ -850,7 +805,6 @@ function goToStep(step) {
 }
 
 window.onload = () => {
-    // מתחילים תמיד במסך ההוראות
     goToStep("intro");
 };
 </script>
