@@ -1,911 +1,731 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>שובר מתנה - הדס נריה פלד</title>
-    
-    <!-- ספריות חיצוניות -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Varela+Round&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-    <style>
-        body {
-            font-family: 'Varela Round', sans-serif;
-            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #2D3748;
-        }
-
-        h1, h2, h3, .font-bold, .font-semibold {
-            font-family: 'Fredoka', sans-serif;
-        }
-
-        /* כפתורי קשת בענן */
-        .btn-rainbow {
-            background: linear-gradient(90deg, 
-                rgba(255,179,186,1) 0%, 
-                rgba(255,223,186,1) 20%, 
-                rgba(255,255,186,1) 40%, 
-                rgba(186,255,201,1) 60%, 
-                rgba(186,225,255,1) 80%, 
-                rgba(220,186,255,1) 100%);
-            background-size: 200% 200%;
-            animation: rainbowShift 5s ease infinite;
-            color: #2D3748;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .btn-rainbow:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            filter: brightness(1.05);
-        }
-
-        @keyframes rainbowShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* אנימציית עננים */
-        .clouds-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 50px;
-            opacity: 0.8;
-            animation: float linear infinite;
-        }
-
-        .cloud::before, .cloud::after {
-            content: '';
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-        }
-
-        .cloud1 { width: 100px; height: 40px; top: 15%; left: -150px; animation-duration: 35s; }
-        .cloud1::before { width: 50px; height: 50px; top: -25px; left: 15px; }
-        .cloud1::after { width: 40px; height: 40px; top: -15px; right: 15px; }
-
-        .cloud2 { width: 140px; height: 50px; top: 40%; left: -200px; animation-duration: 45s; opacity: 0.6; transform: scale(1.2); }
-        .cloud2::before { width: 70px; height: 70px; top: -35px; left: 20px; }
-        .cloud2::after { width: 60px; height: 60px; top: -20px; right: 20px; }
-        
-        .cloud3 { width: 80px; height: 30px; top: 70%; left: -100px; animation-duration: 25s; opacity: 0.9; transform: scale(0.8); }
-        .cloud3::before { width: 40px; height: 40px; top: -20px; left: 10px; }
-        .cloud3::after { width: 30px; height: 30px; top: -10px; right: 15px; }
-
-        @keyframes float {
-            0% { left: -200px; }
-            100% { left: 100vw; }
-        }
-
-        /* אלמנטים במשחק */
-        .music-bg-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
-            overflow: hidden;
-        }
-
-        .floating-music {
-            position: absolute;
-            font-size: 3.5rem;
-            opacity: 0.85;
-            animation: floatUp linear infinite, sway ease-in-out infinite alternate;
-            bottom: -100px;
-            filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.15));
-            cursor: pointer;
-            transition: transform 0.2s;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .floating-music:hover {
-            transform: scale(1.2);
-            filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.3));
-        }
-
-        .caught-good {
-            animation: catchGoodAnim 0.3s forwards !important;
-            pointer-events: none;
-        }
-
-        .caught-bad {
-            animation: catchBadAnim 0.3s forwards !important;
-            pointer-events: none;
-        }
-
-        @keyframes catchGoodAnim {
-            0% { transform: scale(1); opacity: 0.8; }
-            40% { transform: scale(1.6) rotate(15deg); opacity: 1; filter: brightness(1.5) drop-shadow(0 0 15px #4ade80); }
-            100% { transform: scale(0); opacity: 0; }
-        }
-
-        @keyframes catchBadAnim {
-            0% { transform: scale(1); opacity: 0.8; }
-            40% { transform: scale(1.4) rotate(-15deg); opacity: 1; filter: brightness(0.8) drop-shadow(0 0 15px #ef4444); }
-            100% { transform: scale(0); opacity: 0; }
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(-15deg); opacity: 0; }
-            10% { opacity: 0.9; }
-            90% { opacity: 0.9; }
-            100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
-        }
-
-        @keyframes sway {
-            0% { margin-left: -50px; }
-            100% { margin-left: 50px; }
-        }
-
-        /* עיצוב כללי לאפליקציה */
-        .app-container {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.6);
-            transition: all 0.5s ease;
-        }
-
-        .custom-checkbox input:checked + div {
-            background: linear-gradient(90deg, rgba(186,225,255,1) 0%, rgba(220,186,255,1) 100%);
-            border-color: #8b5cf6;
-            color: #1e1b4b;
-            font-weight: bold;
-        }
-        
-        .custom-radio input:checked + div {
-            background: linear-gradient(90deg, rgba(255,223,186,1) 0%, rgba(255,255,186,1) 100%);
-            border-color: #f59e0b;
-            font-weight: bold;
-        }
-
-        .fade-enter { opacity: 0; transform: scale(0.95); }
-        .fade-enter-active {
-            opacity: 1;
-            transform: scale(1);
-            transition: opacity 300ms, transform 300ms;
-        }
-        
-        /* סגנון לוידאו מקומי */
-        #local-video-player {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: auto;
-        }
-
-        /* הגדרות הדפסה */
-        @media print {
-            .print-hide { display: none !important; }
-            .app-container {
-                box-shadow: none !important;
-                border: 2px solid #e5e7eb !important;
-                background: white !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                margin: 0 !important;
-            }
-            body { background: white !important; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שובר מתנה - הדס נריה פלד</title>
+​<!-- ספריות חיצוניות -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Varela+Round&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+​<style>
+body {
+font-family: 'Varela Round', sans-serif;
+background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+min-height: 100vh;
+overflow-x: hidden;
+margin: 0;
+padding: 0;
+display: flex;
+justify-content: center;
+align-items: center;
+color: #2D3748;
+}
+​h1, h2, h3, .font-bold, .font-semibold {
+font-family: 'Fredoka', sans-serif;
+}
+​/* כפתורי קשת בענן */
+.btn-rainbow {
+background: linear-gradient(90deg,
+rgba(255,179,186,1) 0%,
+rgba(255,223,186,1) 20%,
+rgba(255,255,186,1) 40%,
+rgba(186,255,201,1) 60%,
+rgba(186,225,255,1) 80%,
+rgba(220,186,255,1) 100%);
+background-size: 200% 200%;
+animation: rainbowShift 5s ease infinite;
+color: #2D3748;
+font-weight: 600;
+transition: all 0.3s ease;
+box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+​.btn-rainbow:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+filter: brightness(1.05);
+}
+​@keyframes rainbowShift {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+​/* אנימציית עננים */
+.clouds-container {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 0;
+pointer-events: none;
+overflow: hidden;
+}
+​.cloud {
+position: absolute;
+background: white;
+border-radius: 50px;
+opacity: 0.8;
+animation: float linear infinite;
+}
+​.cloud::before, .cloud::after {
+content: '';
+position: absolute;
+background: white;
+border-radius: 50%;
+}
+​.cloud1 { width: 100px; height: 40px; top: 15%; left: -150px; animation-duration: 35s; }
+.cloud1::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+.cloud1::after { width: 40px; height: 40px; top: -15px; right: 15px; }
+​.cloud2 { width: 140px; height: 50px; top: 40%; left: -200px; animation-duration: 45s; opacity: 0.6; transform: scale(1.2); }
+.cloud2::before { width: 70px; height: 70px; top: -35px; left: 20px; }
+.cloud2::after { width: 60px; height: 60px; top: -20px; right: 20px; }
+​.cloud3 { width: 80px; height: 30px; top: 70%; left: -100px; animation-duration: 25s; opacity: 0.9; transform: scale(0.8); }
+.cloud3::before { width: 40px; height: 40px; top: -20px; left: 10px; }
+.cloud3::after { width: 30px; height: 30px; top: -10px; right: 15px; }
+​@keyframes float {
+0% { left: -200px; }
+100% { left: 100vw; }
+}
+​/* אלמנטים במשחק */
+.music-bg-container {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 5;
+overflow: hidden;
+pointer-events: none;
+}
+​.floating-music {
+position: absolute;
+font-size: 3.5rem;
+opacity: 0.85;
+animation: floatUp linear infinite, sway ease-in-out infinite alternate;
+bottom: -100px;
+filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.15));
+cursor: pointer;
+transition: transform 0.2s;
+user-select: none;
+-webkit-tap-highlight-color: transparent;
+pointer-events: auto;
+}
+​.floating-music:hover {
+transform: scale(1.2);
+filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.3));
+}
+​.caught-good {
+animation: catchGoodAnim 0.3s forwards !important;
+pointer-events: none;
+}
+​.caught-bad {
+animation: catchBadAnim 0.3s forwards !important;
+pointer-events: none;
+}
+​@keyframes catchGoodAnim {
+0% { transform: scale(1); opacity: 0.8; }
+40% { transform: scale(1.6) rotate(15deg); opacity: 1; filter: brightness(1.5) drop-shadow(0 0 15px #4ade80); }
+100% { transform: scale(0); opacity: 0; }
+}
+​@keyframes catchBadAnim {
+0% { transform: scale(1); opacity: 0.8; }
+40% { transform: scale(1.4) rotate(-15deg); opacity: 1; filter: brightness(0.8) drop-shadow(0 0 15px #ef4444); }
+100% { transform: scale(0); opacity: 0; }
+}
+​@keyframes floatUp {
+0% { transform: translateY(0) rotate(-15deg); opacity: 0; }
+10% { opacity: 0.9; }
+90% { opacity: 0.9; }
+100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
+}
+​@keyframes sway {
+0% { margin-left: -50px; }
+100% { margin-left: 50px; }
+}
+​/* עיצוב כללי לאפליקציה */
+.app-container {
+position: relative;
+z-index: 10;
+background: rgba(255, 255, 255, 0.9);
+backdrop-filter: blur(10px);
+border: 2px solid rgba(255, 255, 255, 0.6);
+transition: all 0.5s ease;
+}
+​.custom-checkbox input:checked + div {
+background: linear-gradient(90deg, rgba(186,225,255,1) 0%, rgba(220,186,255,1) 100%);
+border-color: #8b5cf6;
+color: #1e1b4b;
+font-weight: bold;
+}
+​.custom-radio input:checked + div {
+background: linear-gradient(90deg, rgba(255,223,186,1) 0%, rgba(255,255,186,1) 100%);
+border-color: #f59e0b;
+font-weight: bold;
+}
+​.fade-enter { opacity: 0; transform: scale(0.95); }
+.fade-enter-active {
+opacity: 1;
+transform: scale(1);
+transition: opacity 300ms, transform 300ms;
+}
+​#local-video-player {
+width: 100%;
+height: 100%;
+object-fit: cover;
+pointer-events: auto;
+}
+​@media print {
+.print-hide { display: none !important; }
+.app-container {
+box-shadow: none !important;
+border: 2px solid #e5e7eb !important;
+background: white !important;
+width: 100% !important;
+max-width: 100% !important;
+margin: 0 !important;
+}
+body { background: white !important; }
+}
+</style>
 </head>
 <body class="p-4 sm:p-8">
-
-    <!-- רקע עננים -->
-    <div class="clouds-container print-hide">
-        <div class="cloud cloud1"></div>
-        <div class="cloud cloud2" style="animation-delay: -10s;"></div>
-        <div class="cloud cloud3" style="animation-delay: -20s;"></div>
-        <div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.5;"></div>
-    </div>
-
-    <!-- שכבת המשחק -->
-    <div class="music-bg-container print-hide" id="music-layer">
-        <!-- ==== דברים טובים: כלי נגינה (זזים קצת יותר לאט) ==== -->
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation-duration: 5.5s; animation-delay: 0s;">🎸</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 25%; animation-duration: 6s; animation-delay: -1s;">🎹</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 45%; animation-duration: 5s; animation-delay: -2s;">🥁</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 65%; animation-duration: 6.5s; animation-delay: -3s;">🎷</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 80%; animation-duration: 5.2s; animation-delay: -1.5s;">🎺</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 15%; animation-duration: 5.8s; animation-delay: -2.5s;">🎻</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 55%; animation-duration: 6.2s; animation-delay: -0.5s;">🎸</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 85%; animation-duration: 5.6s; animation-delay: -4s;">🎹</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 35%; animation-duration: 5.3s; animation-delay: -3.5s;">🥁</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 50%; animation-duration: 5.9s; animation-delay: -1.8s;">🎷</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 90%; animation-duration: 6.1s; animation-delay: -2.2s;">🎻</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 20%; animation-duration: 5.1s; animation-delay: -0.8s;">🎺</div>
-
-        <!-- ==== דברים רעים: תווים, חפצים, כלי עבודה (זזים מהר יותר) ==== -->
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 10%; animation-duration: 3.5s; animation-delay: -1s;">🎵</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 30%; animation-duration: 3.8s; animation-delay: -2.5s;">🔨</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 50%; animation-duration: 3.2s; animation-delay: -0.5s;">🔧</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 70%; animation-duration: 3.6s; animation-delay: -3s;">⚽</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 90%; animation-duration: 3.9s; animation-delay: -1.5s;">🎶</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 40%; animation-duration: 3.4s; animation-delay: -4s;">✂️</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 60%; animation-duration: 3.7s; animation-delay: -2s;">✏️</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 80%; animation-duration: 3.3s; animation-delay: -1.2s;">🍔</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 18%; animation-duration: 3.5s; animation-delay: -3.5s;">📚</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 88%; animation-duration: 3.8s; animation-delay: -0.8s;">🍎</div>
-    </div>
-    
-    <!-- מסך ניצחון וסרטון מקומי (מוסתר בהתחלה) -->
-    <div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/80 backdrop-blur-sm flex-col items-center justify-between py-10 px-4 print-hide">
-        <div class="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-black mt-4 flex items-center justify-center">
-            
-            <!-- וידאו HTML5 מקומי מגיטהאב -->
-            <video id="local-video-player" controls playsinline>
-                <source src="kidd-video.mp4" type="video/mp4">
-                <p class="text-white">הדפדפן שלך אינו תומך בהפעלת וידאו.</p>
-            </video>
-
-        </div>
-        <div class="mt-8 text-center animate-bounce">
-            <h2 class="text-3xl font-bold text-sky-800 mb-6 drop-shadow-md">כל הכבוד! הצלחת! 🎉</h2>
-            <button onclick="startApp()" class="btn-rainbow px-10 py-5 rounded-full text-2xl shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
-                ברוך הבא לעולם המוזיקה!
-            </button>
-        </div>
-    </div>
-
-    <!-- מיכל האפליקציה המרכזי -->
-    <div id="app" class="app-container w-full max-w-3xl mx-auto rounded-3xl shadow-2xl p-6 sm:p-10 text-center relative z-10">
-        <!-- Content will be injected here by JavaScript -->
-    </div>
-
-    <script>
-        const courses = [
-            { id: 'piano', name: 'פסנתר', needsInstrument: true },
-            { id: 'vocals', name: 'שירה ופיתוח קול', needsInstrument: false },
-            { id: 'production', name: 'הפקה מוזיקלית', needsInstrument: false },
-            { id: 'computer', name: 'שימוש במחשב - תכנות, עריכה והקלטה', needsInstrument: false },
-            { id: 'guitar_classic', name: 'גיטרה קלאסית', needsInstrument: true },
-            { id: 'guitar_acoustic', name: 'גיטרה אקוסטית', needsInstrument: true },
-            { id: 'guitar_electric', name: 'גיטרה חשמלית', needsInstrument: true },
-            { id: 'guitar_bass', name: 'גיטרה בס', needsInstrument: true },
-            { id: 'ukulele', name: 'יוקליילי', needsInstrument: true },
-            { id: 'dj', name: 'תקליטנות דיג\'יי (מבוא, Virtual DJ וקונטרולר)', needsInstrument: false }
-        ];
-
-        const musicStyles = [
-            "פופ", "רוק", "אלקטרוני", "קלאסי", "ים תיכונית", "מזרחית", "ישראלית", "עברית", "היפ הופ / ראפ", "ג'אז / בלוז"
-        ];
-
-        let state = {
-            currentStep: 'entry', 
-            answers: {
-                activity: '',
-                styles: [],
-                favoriteArtists: '',
-                courses: [],
-                needsLoan: null,
-                availability: {
-                    days: [],
-                    startHour: '14:00',
-                    endHour: '20:00'
-                }
-            }
-        };
-        
-        let clickCount = 0; 
-
-        function setGameMode(active) {
-            const container = document.getElementById('music-layer');
-            if (container) {
-                container.style.pointerEvents = active ? 'auto' : 'none';
-                container.style.zIndex = active ? '50' : '5';
-            }
-        }
-        
-        function catchItem(el, isInstrument) {
-            if (state.currentStep !== 'entry' || clickCount >= 13) return;
-            if (el.classList.contains('caught-good') || el.classList.contains('caught-bad')) return; 
-            
-            const counterDisplay = document.getElementById('counter-display');
-            
-            if (isInstrument) {
-                // לחיצה טובה - כלי נגינה
-                el.classList.add('caught-good');
-                clickCount++;
-                if (counterDisplay) {
-                    counterDisplay.style.color = '#0284c7'; // צבע תכלת-כחול חיובי
-                    counterDisplay.style.transform = 'scale(1.4) rotate(' + (Math.random() * 20 - 10) + 'deg)';
-                }
-            } else {
-                // לחיצה שגויה - חפץ / תו
-                el.classList.add('caught-bad');
-                clickCount = Math.max(0, clickCount - 1); 
-                if (counterDisplay) {
-                    counterDisplay.style.color = '#ef4444'; // צבע אדום שגיאה
-                    counterDisplay.style.transform = 'scale(0.8) rotate(' + (Math.random() * -20) + 'deg)';
-                }
-            }
-            
-            if (counterDisplay) {
-                counterDisplay.innerText = clickCount + "/13";
-                setTimeout(() => { 
-                    counterDisplay.style.transform = 'scale(1) rotate(0deg)'; 
-                    counterDisplay.style.color = '#0c4a6e'; 
-                }, 200);
-            }
-            
-            // בדיקת ניצחון
-            if (clickCount >= 13) {
-                triggerWin(); 
-            }
-            
-            setTimeout(() => {
-                el.classList.remove('caught-good', 'caught-bad');
-            }, 3000);
-        }
-
-        function triggerWin() {
-            setGameMode(false); 
-            
-            document.getElementById('app').style.display = 'none';
-            const winScreen = document.getElementById('win-screen');
-            winScreen.classList.remove('hidden');
-            winScreen.classList.add('flex');
-            
-            // הפעלת הוידאו המקומי
-            const videoPlayer = document.getElementById('local-video-player');
-            if (videoPlayer) {
-                videoPlayer.play().catch(function(error) {
-                    console.log("דפדפן מנע הפעלה אוטומטית:", error);
-                });
-            }
-        }
-        
-        function startApp() {
-            // עצירת הוידאו
-            const videoPlayer = document.getElementById('local-video-player');
-            if (videoPlayer) {
-                videoPlayer.pause();
-            }
-            
-            const winScreen = document.getElementById('win-screen');
-            winScreen.classList.add('hidden');
-            winScreen.classList.remove('flex');
-            
-            document.getElementById('app').style.display = 'block';
-            goToStep('welcome');
-        }
-
-        const appDiv = document.getElementById('app');
-
-        function renderStep(htmlContent) {
-            appDiv.classList.add('fade-enter');
-            setTimeout(() => {
-                appDiv.innerHTML = htmlContent;
-                appDiv.classList.remove('fade-enter');
-                appDiv.classList.add('fade-enter-active');
-                setTimeout(() => {
-                    appDiv.classList.remove('fade-enter-active');
-                }, 300);
-            }, 150);
-        }
-
-        function showCustomAlert(msg, elementIdToInsertAfter) {
-            const existingAlert = document.getElementById('custom-alert');
-            if (existingAlert) existingAlert.remove();
-            
-            const alertDiv = document.createElement('div');
-            alertDiv.id = 'custom-alert';
-            alertDiv.className = 'bg-red-100 text-red-700 p-3 rounded-lg border border-red-300 text-sm font-bold mt-2 animate-pulse';
-            alertDiv.innerText = msg;
-            
-            const target = document.getElementById(elementIdToInsertAfter);
-            if(target) target.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                if (alertDiv.parentNode) alertDiv.remove();
-            }, 3500);
-        }
-        
-        function renderEntry() {
-            clickCount = 0;
-            setGameMode(true); 
-            
-            const html = `
-                <div class="space-y-6 py-10" id="game-intro">
-                    <h1 class="text-4xl sm:text-5xl font-bold text-sky-800 mb-6">מזל טוב להדס נריה!</h1>
-                    <p class="text-2xl text-gray-700 font-medium mb-4">כדי לפתוח את המתנה, עליך לתפוס <br/><span class="text-pink-500 font-bold text-4xl">13</span> כלי נגינה אמיתיים!</p>
-                    <div class="text-7xl mb-4 font-bold text-sky-900 transition-all duration-200 inline-block" id="counter-display">0/13</div>
-                    <p class="text-xl text-sky-600 font-medium mt-4">לחץ מהר על כלי הנגינה (גיטרות, תופים, פסנתרים...)</p>
-                    <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 mt-4">
-                        <p class="text-lg text-red-600 font-bold animate-pulse">זהירות!</p>
-                        <p class="text-md text-red-500 font-medium mt-1">לחיצה על תווים, כלי עבודה, ציוד בית ספר או אוכל – תוריד לך נקודות!</p>
-                    </div>
-                </div>
-            `;
-            renderStep(html);
-        }
-
-        function renderWelcome() {
-            const html = `
-                <div class="space-y-6">
-                    <h1 class="text-4xl sm:text-5xl font-bold text-sky-800 mb-2">מזל טוב להדס נריה פלד!</h1>
-                    <h2 class="text-2xl text-sky-600 font-medium">לרגל הגעתך לגיל מצוות</h2>
-                    
-                    <div class="bg-white/60 rounded-2xl p-6 shadow-inner text-lg leading-relaxed border border-white my-8">
-                        <p class="mb-4">קיבלת שובר מתנה מיוחד המקנה לך <strong class="text-sky-700">3 חודשים של שיעורי מוזיקה</strong> (4 שיעורים בחודש)!</p>
-                        <p class="mb-4">המועד יקבע מראש בהתאם לפניות שלך.</p>
-                        <p>במידה ותבחר בשיעורי נגינה (פסנתר, גיטרות לסוגיהן או יוקליילי), יינתן לך כלי בהשאלה לתקופת הלימודים במידת הצורך.</p>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                        <button onclick="goToStep('quiz1')" class="btn-rainbow px-8 py-4 rounded-full text-xl flex-1">
-                            עזור לי לבחור מה מתאים לי 🪄
-                        </button>
-                        <button onclick="goToStep('courses')" class="bg-white hover:bg-gray-50 text-sky-700 border-2 border-sky-200 px-8 py-4 rounded-full text-xl font-semibold transition-all flex-1 shadow-md hover:shadow-lg">
-                            אני כבר יודע מה אני רוצה! 🎸
-                        </button>
-                    </div>
-                </div>
-            `;
-            renderStep(html);
-        }
-
-        function renderQuiz1() {
-            const activities = ['לנגן על כלי', 'לשיר', 'לתקלט (לשים מוזיקה)', 'ליצור מוזיקה', 'להפיק', 'למקסס ולערוך במחשב'];
-            
-            let optionsHtml = activities.map((act) => `
-                <label class="custom-radio cursor-pointer block">
-                    <input type="radio" name="activity" value="${act}" class="hidden" onchange="state.answers.activity = this.value">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-lg hover:border-yellow-300">
-                        ${act}
-                    </div>
-                </label>
-            `).join('');
-
-            const html = `
-                <div class="space-y-6" id="quiz1-container">
-                    <h2 class="text-3xl font-bold text-sky-800">שאלה 1 מתוך 3</h2>
-                    <h3 class="text-xl text-gray-700">מה הכי היית רוצה לעשות? (בחר אחד)</h3>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-right mt-6">
-                        ${optionsHtml}
-                    </div>
-
-                    <div class="mt-8 flex justify-between">
-                        <button onclick="goToStep('welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                        <button onclick="validateAndGo('quiz2', state.answers.activity !== '', 'אנא בחר אפשרות אחת כדי להמשיך', 'quiz1-container')" class="btn-rainbow px-8 py-3 rounded-full text-lg">המשך</button>
-                    </div>
-                </div>
-            `;
-            renderStep(html);
-        }
-
-        function renderQuiz2() {
-            let optionsHtml = musicStyles.map((style) => `
-                <label class="custom-checkbox cursor-pointer block">
-                    <input type="checkbox" value="${style}" class="hidden" 
-                        ${state.answers.styles.includes(style) ? 'checked' : ''}
-                        onchange="toggleStyle('${style}')">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-md hover:border-purple-300 text-center">
-                        ${style}
-                    </div>
-                </label>
-            `).join('');
-
-            const html = `
-                <div class="space-y-6" id="quiz2-container">
-                    <h2 class="text-3xl font-bold text-sky-800">שאלה 2 מתוך 3</h2>
-                    <h3 class="text-xl text-gray-700">אילו סגנונות מוזיקליים אתה הכי אוהב? (אפשר לבחור כמה)</h3>
-                    
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
-                        ${optionsHtml}
-                    </div>
-
-                    <div class="mt-8 flex justify-between">
-                        <button onclick="goToStep('quiz1')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                        <button onclick="validateAndGo('quiz3', state.answers.styles.length > 0, 'בחר לפחות סגנון אחד', 'quiz2-container')" class="btn-rainbow px-8 py-3 rounded-full text-lg">המשך</button>
-                    </div>
-                </div>
-            `;
-            renderStep(html);
-        }
-
-        function toggleStyle(style) {
-            const index = state.answers.styles.indexOf(style);
-            if (index > -1) {
-                state.answers.styles.splice(index, 1);
-            } else {
-                state.answers.styles.push(style);
-            }
-        }
-
-        function renderQuiz3() {
-            const html = `
-                <div class="space-y-6">
-                    <h2 class="text-3xl font-bold text-sky-800">שאלה 3 מתוך 3</h2>
-                    <h3 class="text-xl text-gray-700">מי הם הזמרים, הזמרות או הלהקות שאתה הכי אוהב לשמוע? אילו שירים? (הכי פתוח שיש!)</h3>
-                    
-                    <div class="mt-6 text-right">
-                        <textarea id="artistsText" rows="4" class="w-full bg-white border-2 border-sky-200 rounded-xl p-4 text-lg focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-200 transition-all resize-none" placeholder="לדוגמה: שלמה ארצי, עומר אדם, הביטלס, שירים מהטיקטוק... מה שבא לך!">${state.answers.favoriteArtists}</textarea>
-                    </div>
-
-                    <div class="mt-8 flex justify-between items-center">
-                        <button onclick="goToStep('quiz2')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                        <button onclick="saveTextAndGo('courses')" class="btn-rainbow px-8 py-3 rounded-full text-lg">בוא נבחר שיעורים!</button>
-                    </div>
-                </div>
-            `;
-            renderStep(html);
-        }
-
-        function saveTextAndGo(nextStep) {
-            state.answers.favoriteArtists = document.getElementById('artistsText').value;
-            goToStep(nextStep);
-        }
-
-        function renderCourses() {
-            let message = "בחר את השיעורים שאתה רוצה ללמוד.";
-            if (state.answers.activity !== '') {
-                message = "לפי התשובות שלך, הנה כל האפשרויות. בחר מה שהכי מדבר אליך!";
-            }
-
-            let optionsHtml = courses.map((course) => `
-                <label class="custom-checkbox cursor-pointer block text-right">
-                    <input type="checkbox" value="${course.id}" class="hidden course-cb" 
-                        ${state.answers.courses.includes(course.id) ? 'checked' : ''}
-                        onchange="handleCourseSelection(this)">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-lg hover:border-pink-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                        <span class="font-semibold">${course.name}</span>
-                        ${course.needsInstrument ? '<span class="text-xs bg-sky-100 text-sky-800 px-2 py-1 rounded-full whitespace-nowrap">אפשרות כלי בהשאלה</span>' : ''}
-                    </div>
-                </label>
-            `).join('');
-
-            const html = `
-                <div class="space-y-6" id="courses-container">
-                    <h2 class="text-3xl font-bold text-sky-800">בחירת שיעורים</h2>
-                    <p class="text-lg text-gray-700">${message}</p>
-                    <div class="bg-yellow-50 text-yellow-800 p-3 rounded-lg border border-yellow-200 text-sm font-medium">
-                        ניתן לבחור תחום אחד, או לשלב <strong>עד שני תחומים</strong> יחד.
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 h-72 overflow-y-auto pr-2 custom-scrollbar text-right" style="scrollbar-width: thin;">
-                        ${optionsHtml}
-                    </div>
-
-                    <div class="mt-8 flex justify-between">
-                        <button onclick="goToStep('${state.answers.activity !== '' ? 'quiz3' : 'welcome'}')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                        <button id="btnContinueCourses" onclick="proceedFromCourses()" class="btn-rainbow px-8 py-3 rounded-full text-lg opacity-50 cursor-not-allowed" disabled>המשך לשעות וימים</button>
-                    </div>
-                </div>
-            `;
-            renderStep(html);
-            updateCourseContinueBtn();
-        }
-
-        function handleCourseSelection(cb) {
-            const courseId = cb.value;
-            if (cb.checked) {
-                if (state.answers.courses.length >= 2) {
-                    cb.checked = false;
-                    showCustomAlert("ניתן לבחור עד 2 תחומים לכל היותר.", "courses-container");
-                    return;
-                }
-                state.answers.courses.push(courseId);
-            } else {
-                state.answers.courses = state.answers.courses.filter(id => id !== courseId);
-            }
-            updateCourseContinueBtn();
-        }
-
-        function updateCourseContinueBtn() {
-            const btn = document.getElementById('btnContinueCourses');
-            if (btn) {
-                if (state.answers.courses.length > 0) {
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                } else {
-                    btn.disabled = true;
-                    btn.classList.add('opacity-50', 'cursor-not-allowed');
-                }
-            }
-        }
-
-        function proceedFromCourses() {
-            const needsLoanDialog = state.answers.courses.some(courseId => {
-                const course = courses.find(c => c.id === courseId);
-                return course && course.needsInstrument;
-            });
-
-            if (needsLoanDialog) {
-                goToStep('instrument');
-            } else {
-                state.answers.needsLoan = false; 
-                goToStep('scheduling');
-            }
-        }
-
-        function renderInstrument() {
-            const html = `
-                <div class="space-y-6">
-                    <h2 class="text-3xl font-bold text-sky-800">השאלת כלי נגינה 🎸🎹</h2>
-                    <h3 class="text-xl text-gray-700">בחרת בשיעורי נגינה! האם יש לך כלי בבית או שתרצה שנישאיל לך אחד לתקופת הלימודים?</h3>
-                    
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                        <button onclick="setLoanAndProceed(true)" class="bg-white hover:bg-sky-50 text-sky-800 border-2 border-sky-300 px-8 py-4 rounded-xl text-xl font-semibold transition-all flex-1">
-                            כן, אשמח להשאלת כלי
-                        </button>
-                        <button onclick="setLoanAndProceed(false)" class="bg-white hover:bg-sky-50 text-sky-800 border-2 border-sky-300 px-8 py-4 rounded-xl text-xl font-semibold transition-all flex-1">
-                            לא, יש לי כלי משלי
-                        </button>
-                    </div>
-
-                    <div class="mt-8 text-right">
-                        <button onclick="goToStep('courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור לבחירת שיעורים</button>
-                    </div>
-                </div>
-            `;
-            renderStep(html);
-        }
-
-        function setLoanAndProceed(needs) {
-            state.answers.needsLoan = needs;
-            goToStep('scheduling');
-        }
-
-        function renderScheduling() {
-            const days = [
-                { id: 'א', name: 'ראשון' }, { id: 'ב', name: 'שני' },
-                { id: 'ג', name: 'שלישי' }, { id: 'ד', name: 'רביעי' },
-                { id: 'ה', name: 'חמישי' }
-            ];
-
-            const hours = ['14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
-
-            let daysHtml = days.map(day => `
-                <label class="custom-checkbox cursor-pointer block text-center">
-                    <input type="checkbox" value="${day.id}" class="hidden" 
-                        ${state.answers.availability.days.includes(day.id) ? 'checked' : ''}
-                        onchange="toggleDay('${day.id}')">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all hover:border-blue-300 font-bold text-lg">
-                        יום ${day.id}'
-                    </div>
-                </label>
-            `).join('');
-
-            let startHoursHtml = hours.slice(0, -1).map(h => `<option value="${h}" ${state.answers.availability.startHour === h ? 'selected' : ''}>${h}</option>`).join('');
-            let endHoursHtml = hours.slice(1).map(h => `<option value="${h}" ${state.answers.availability.endHour === h ? 'selected' : ''}>${h}</option>`).join('');
-
-            const html = `
-                <div class="space-y-6" id="schedule-container">
-                    <h2 class="text-3xl font-bold text-sky-800">מתי נח לך ללמוד? 🗓️</h2>
-                    <p class="text-lg text-gray-700">סמן את הימים והשעות הפנויות שלך במהלך השבוע כדי שנוכל לשבץ את השיעורים בנוחות.</p>
-                    
-                    <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-sky-50 mt-4">
-                        <h4 class="text-md font-semibold text-sky-900 mb-3 text-right">באילו ימים? (אפשר לבחור כמה)</h4>
-                        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                            ${daysHtml}
-                        </div>
-                    </div>
-
-                    <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-sky-50 mt-4 flex flex-col sm:flex-row gap-4 items-center justify-center">
-                        <div class="flex items-center gap-2">
-                            <span class="text-sky-900 font-medium">החל משעה:</span>
-                            <select id="startHour" onchange="updateHours()" class="bg-white border border-sky-200 rounded-lg p-2 text-lg focus:outline-none focus:border-sky-400 font-bold">
-                                ${startHoursHtml}
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-sky-900 font-medium">ועד שעה:</span>
-                            <select id="endHour" onchange="updateHours()" class="bg-white border border-sky-200 rounded-lg p-2 text-lg focus:outline-none focus:border-sky-400 font-bold">
-                                ${endHoursHtml}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 flex justify-between items-center">
-                        <button onclick="goBackFromScheduling()" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                        <button id="btnContinueSchedule" onclick="proceedToSummary()" class="btn-rainbow px-8 py-3 rounded-full text-lg ${state.answers.availability.days.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}" ${state.answers.availability.days.length === 0 ? 'disabled' : ''}>הפקת השובר!</button>
-                    </div>
-                </div>
-            `;
-            renderStep(html);
-        }
-
-        function toggleDay(dayId) {
-            const index = state.answers.availability.days.indexOf(dayId);
-            if (index > -1) {
-                state.answers.availability.days.splice(index, 1);
-            } else {
-                state.answers.availability.days.push(dayId);
-            }
-            const btn = document.getElementById('btnContinueSchedule');
-            if (btn) {
-                if (state.answers.availability.days.length > 0) {
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                } else {
-                    btn.disabled = true;
-                    btn.classList.add('opacity-50', 'cursor-not-allowed');
-                }
-            }
-        }
-
-        function updateHours() {
-            state.answers.availability.startHour = document.getElementById('startHour').value;
-            state.answers.availability.endHour = document.getElementById('endHour').value;
-        }
-
-        function goBackFromScheduling() {
-            const needsLoanDialog = state.answers.courses.some(courseId => {
-                const course = courses.find(c => c.id === courseId);
-                return course && course.needsInstrument;
-            });
-            if (needsLoanDialog) {
-                goToStep('instrument');
-            } else {
-                goToStep('courses');
-            }
-        }
-
-        function proceedToSummary() {
-            const start = parseInt(state.answers.availability.startHour.split(':')[0]);
-            const end = parseInt(state.answers.availability.endHour.split(':')[0]);
-            if (start >= end) {
-                showCustomAlert("שעת הסיום חייבת להיות מאוחרת משעת ההתחלה.", "schedule-container");
-                return;
-            }
-            goToStep('summary');
-        }
-
-        function renderSummary() {
-            const selectedNames = state.answers.courses.map(id => {
-                return courses.find(c => c.id === id).name;
-            }).join(' + ');
-
-            let loanText = "";
-            if (state.answers.needsLoan === true) {
-                loanText = "<p class='mt-3 text-pink-600 font-bold bg-pink-50 p-2 rounded-lg'>* רשמנו לעצמנו להכין עבורך כלי נגינה להשאלה.</p>";
-            }
-
-            const sortedDays = state.answers.availability.days.sort((a,b) => "אבגדה".indexOf(a) - "אבגדה".indexOf(b));
-            const daysText = sortedDays.map(d => "'" + d).join(', ');
-            const availabilityText = `<div class="bg-sky-50 text-sky-800 p-3 rounded-lg border border-sky-100 mt-4 text-center">
-                <strong>זמינות לשיעורים:</strong><br/>ימים ${daysText}<br/>בין השעות ${state.answers.availability.startHour} - ${state.answers.availability.endHour}
-            </div>`;
-
-            const html = `
-                <div class="space-y-6" id="summaryContent">
-                    <div class="text-6xl mb-2">🎉</div>
-                    <h2 class="text-4xl font-bold text-sky-800 mb-2">מעולה, הדס נריה!</h2>
-                    <h3 class="text-2xl text-gray-700">הבחירה שלך נקלטה בהצלחה.</h3>
-                    
-                    <div class="bg-white/90 rounded-2xl p-6 shadow-md border border-sky-100 my-6 inline-block text-right max-w-lg mx-auto w-full">
-                        <p class="text-lg text-gray-600 mb-1">השיעורים שבחרת:</p>
-                        <p class="text-2xl font-bold text-sky-900 mb-4">${selectedNames}</p>
-                        
-                        <div class="h-px bg-gray-200 w-full mb-4"></div>
-                        
-                        <p class="text-md text-gray-800 font-medium">השובר תקף ל-3 חודשים (4 שיעורים בחודש).</p>
-                        ${availabilityText}
-                        ${loanText}
-                    </div>
-
-                    <p class="text-xl font-bold text-sky-700 mt-2 mb-6">שיהיה המון מזל טוב והצלחה במוזיקה!</p>
-                    
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center print-hide" id="actionButtons">
-                        <button onclick="downloadPDF()" class="bg-[#25D366] hover:bg-[#128C7E] text-white shadow-lg px-6 py-4 rounded-full text-xl font-semibold transition-all flex items-center justify-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            הורד שובר כ-PDF
-                        </button>
-                    </div>
-                </div>
-            `;
-            renderStep(html);
-            fireConfetti(); 
-        }
-
-        function downloadPDF() {
-            const buttons = document.getElementById('actionButtons');
-            buttons.style.display = 'none';
-            
-            const element = document.getElementById('app');
-            const opt = {
-                margin:       10,
-                filename:     'Music_Gift_Voucher_Hadas.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(element).save().then(() => {
-                buttons.style.display = 'flex';
-            });
-        }
-
-        function validateAndGo(nextStep, isValid, errorMsg, containerId) {
-            if (isValid) {
-                goToStep(nextStep);
-            } else {
-                showCustomAlert(errorMsg, containerId);
-            }
-        }
-
-        function goToStep(stepName) {
-            state.currentStep = stepName;
-            switch(stepName) {
-                case 'entry': renderEntry(); break;
-                case 'welcome': renderWelcome(); break;
-                case 'quiz1': renderQuiz1(); break;
-                case 'quiz2': renderQuiz2(); break;
-                case 'quiz3': renderQuiz3(); break;
-                case 'courses': renderCourses(); break;
-                case 'instrument': renderInstrument(); break;
-                case 'scheduling': renderScheduling(); break;
-                case 'summary': renderSummary(); break;
-            }
-        }
-
-        function fireConfetti() {
-            const colors = ['#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff'];
-            for(let i=0; i<60; i++) {
-                let confetti = document.createElement('div');
-                confetti.style.position = 'fixed';
-                confetti.style.width = '10px';
-                confetti.style.height = '10px';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.top = '-10px';
-                confetti.style.borderRadius = '50%';
-                confetti.style.zIndex = '100';
-                confetti.style.pointerEvents = 'none';
-                document.body.appendChild(confetti);
-
-                let duration = Math.random() * 3 + 2;
-                let delay = Math.random() * 2;
-                
-                confetti.animate([
-                    { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
-                    { transform: `translate3d(${Math.random()*200 - 100}px, 100vh, 0) rotate(${Math.random()*360}deg)`, opacity: 0 }
-                ], {
-                    duration: duration * 1000,
-                    delay: delay * 1000,
-                    easing: 'cubic-bezier(.37,0,.63,1)',
-                    fill: 'forwards'
-                });
-
-                setTimeout(() => confetti.remove(), (duration + delay) * 1000);
-            }
-        }
-
-        // התחלת האפליקציה במסך המשחק הפותח
-        goToStep('entry');
-
-    </script>
+​<!-- רקע עננים -->
+<div class="clouds-container print-hide">
+<div class="cloud cloud1"></div>
+<div class="cloud cloud2" style="animation-delay: -10s;"></div>
+<div class="cloud cloud3" style="animation-delay: -20s;"></div>
+<div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.5;"></div>
+</div>
+​<!-- שכבת המשחק -->
+<div class="music-bg-container print-hide" id="music-layer">
+<!-- ==== כלי נגינה (אמיתיים - מעט יותר איטיים, מזכים בנקודה) ==== -->
+<div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation-duration: 7s; animation-delay: 0s;">🎸</div>
+<div class="floating-music" onclick="catchItem(this, true)" style="left: 25%; animation-duration: 8s; animation-delay: -1s;">🎹</div>
+<div class="floating-music" onclick="catchItem(this, true)" style="left: 45%; animation-duration: 6.5s; animation-delay: -2s;">🥁</div>
+<div class="floating-music" onclick="catchItem(this, true)" style="left: 65%; animation-duration: 7.5s; animation-delay: -3s;">🎷</div>
+<div class="floating-music" onclick="catchItem(this, true)" style="left: 80%; animation-duration: 6.8s; animation-delay: -1.5s;">🎺</div>
+<div class="floating-music" onclick="catchItem(this, true)" style="left: 15%; animation-duration: 7.2s; animation-delay: -2.5s;">🎻</div>
+​<!-- ==== חפצים מבלבלים / תווים / כלי עבודה (מהירים יותר, מורידים נקודה) ==== -->
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 10%; animation-duration: 3.5s; animation-delay: -1s;">🎵</div>
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 30%; animation-duration: 3.8s; animation-delay: -2.5s;">🔨</div>
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 50%; animation-duration: 3.2s; animation-delay: -0.5s;">🔧</div>
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 70%; animation-duration: 3.6s; animation-delay: -3s;">⚽</div>
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 90%; animation-duration: 3.9s; animation-delay: -1.5s;">🎶</div>
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 40%; animation-duration: 3.4s; animation-delay: -4s;">✂️</div>
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 60%; animation-duration: 3.7s; animation-delay: -2s;">✏️</div>
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 80%; animation-duration: 3.3s; animation-delay: -1.2s;">🍔</div>
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 18%; animation-duration: 3.5s; animation-delay: -3.5s;">📚</div>
+<div class="floating-music" onclick="catchItem(this, false)" style="left: 88%; animation-duration: 3.8s; animation-delay: -0.8s;">🍎</div>
+</div>
+​<!-- מסך ניצחון וסרטון דרייב -->
+<div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/90 backdrop-blur-md flex-col items-center justify-between py-8 px-4 print-hide">
+<div class="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-black mt-2 flex items-center justify-center">
+​<video id="local-video-player" controls playsinline preload="auto">
+<source src="https://drive.google.com/uc?export=download&id=16-r46rJcO5ZAvAuPQOfVmXfKrmrKiXjf" type="video/mp4">
+הדפדפן שלך אינו תומך בהפעלת וידאו.
+</video>
+​</div>
+<div class="mt-4 text-center">
+<h2 class="text-3xl font-bold text-sky-800 mb-4 drop-shadow-md">כל הכבוד! הצלחת לתפוס 13 כלי נגינה! 🎉</h2>
+<button onclick="startApp()" class="btn-rainbow px-10 py-4 rounded-full text-2xl shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
+ברוך הבא לעולם המוזיקה!
+</button>
+</div>
+</div>
+​<!-- מיכל האפליקציה המרכזי -->
+<div id="app" class="app-container w-full max-w-3xl mx-auto rounded-3xl shadow-2xl p-6 sm:p-10 text-center relative z-10">
+<!-- התוכן יוזרק על ידי JavaScript -->
+</div>
+​<script>
+const courses = [
+{ id: 'piano', name: 'פסנתר', needsInstrument: true },
+{ id: 'vocals', name: 'שירה ופיתוח קול', needsInstrument: false },
+{ id: 'production', name: 'הפקה מוזיקלית', needsInstrument: false },
+{ id: 'computer', name: 'שימוש במחשב - תכנות, עריכה והקלטה', needsInstrument: false },
+{ id: 'guitar_classic', name: 'גיטרה קלאסית', needsInstrument: true },
+{ id: 'guitar_acoustic', name: 'גיטרה אקוסטית', needsInstrument: true },
+{ id: 'guitar_electric', name: 'גיטרה חשמלית', needsInstrument: true },
+{ id: 'guitar_bass', name: 'גיטרה בס', needsInstrument: true },
+{ id: 'ukulele', name: 'יוקליילי', needsInstrument: true },
+{ id: 'dj', name: 'תקליטנות דיג'יי (מבוא, Virtual DJ וקונטרולר)', needsInstrument: false }
+];
+​const musicStyles = [
+"פופ", "רוק", "אלקטרוני", "קלאסי", "ים תיכונית", "מזרחית", "ישראלית", "עברית", "היפ הופ / ראפ", "ג'אז / בלוז"
+];
+​let state = {
+currentStep: 'entry',
+answers: {
+activity: '',
+styles: [],
+favoriteArtists: '',
+courses: [],
+needsLoan: null,
+availability: {
+days: [],
+startHour: '14:00',
+endHour: '20:00'
+}
+}
+};
+​let clickCount = 0;
+​function setGameMode(active) {
+const container = document.getElementById('music-layer');
+if (container) {
+container.style.pointerEvents = active ? 'auto' : 'none';
+container.style.zIndex = active ? '50' : '5';
+}
+}
+​function catchItem(el, isInstrument) {
+if (state.currentStep !== 'entry' || clickCount >= 13) return;
+if (el.classList.contains('caught-good') || el.classList.contains('caught-bad')) return;
+​const counterDisplay = document.getElementById('counter-display');
+​if (isInstrument) {
+// לחיצה טובה - כלי נגינה בלבד
+el.classList.add('caught-good');
+clickCount++;
+if (counterDisplay) {
+counterDisplay.style.color = '#0284c7';
+counterDisplay.style.transform = 'scale(1.4) rotate(' + (Math.random() * 20 - 10) + 'deg)';
+}
+} else {
+// לחיצה שגויה - חפץ, כלי עבודה או תו
+el.classList.add('caught-bad');
+clickCount = Math.max(0, clickCount - 1); // יורד אחד לאחור
+if (counterDisplay) {
+counterDisplay.style.color = '#ef4444';
+counterDisplay.style.transform = 'scale(0.8) rotate(' + (Math.random() * -20) + 'deg)';
+}
+}
+​if (counterDisplay) {
+counterDisplay.innerText = clickCount + "/13";
+setTimeout(() => {
+counterDisplay.style.transform = 'scale(1) rotate(0deg)';
+counterDisplay.style.color = '#0c4a6e';
+}, 200);
+}
+​// בדיקת ניצחון
+if (clickCount >= 13) {
+triggerWin();
+}
+​setTimeout(() => {
+el.classList.remove('caught-good', 'caught-bad');
+}, 3000);
+}
+​function triggerWin() {
+setGameMode(false);
+​document.getElementById('app').style.display = 'none';
+const winScreen = document.getElementById('win-screen');
+winScreen.classList.remove('hidden');
+winScreen.classList.add('flex');
+​const videoPlayer = document.getElementById('local-video-player');
+if (videoPlayer) {
+videoPlayer.play().catch(function(error) {
+console.log("דפדפן מנע הפעלה אוטומטית, משתמש יכול ללחוץ על נגן:", error);
+});
+}
+}
+​function startApp() {
+const videoPlayer = document.getElementById('local-video-player');
+if (videoPlayer) {
+videoPlayer.pause();
+}
+​const winScreen = document.getElementById('win-screen');
+winScreen.classList.add('hidden');
+winScreen.classList.remove('flex');
+​document.getElementById('app').style.display = 'block';
+goToStep('welcome');
+}
+​const appDiv = document.getElementById('app');
+​function renderStep(htmlContent) {
+appDiv.classList.add('fade-enter');
+setTimeout(() => {
+appDiv.innerHTML = htmlContent;
+appDiv.classList.remove('fade-enter');
+appDiv.classList.add('fade-enter-active');
+setTimeout(() => {
+appDiv.classList.remove('fade-enter-active');
+}, 300);
+}, 150);
+}
+​function showCustomAlert(msg, elementIdToInsertAfter) {
+const existingAlert = document.getElementById('custom-alert');
+if (existingAlert) existingAlert.remove();
+​const alertDiv = document.createElement('div');
+alertDiv.id = 'custom-alert';
+alertDiv.className = 'bg-red-100 text-red-700 p-3 rounded-lg border border-red-300 text-sm font-bold mt-2 animate-pulse';
+alertDiv.innerText = msg;
+​const target = document.getElementById(elementIdToInsertAfter);
+if(target) target.appendChild(alertDiv);
+​setTimeout(() => {
+if (alertDiv.parentNode) alertDiv.remove();
+}, 3500);
+}
+​function renderEntry() {
+clickCount = 0;
+setGameMode(true);
+​const html = <div class="space-y-6 py-6" id="game-intro"> <h1 class="text-4xl sm:text-5xl font-bold text-sky-800 mb-4">מזל טוב להדס נריה!</h1> <p class="text-xl text-gray-700 font-medium mb-2">כדי לפתוח את המתנה, עליך לתפוס <br/><span class="text-pink-500 font-bold text-4xl">13</span> כלי נגינה אמיתיים!</p> <div class="text-6xl mb-2 font-bold text-sky-900 transition-all duration-200 inline-block" id="counter-display">0/13</div> <p class="text-lg text-sky-600 font-medium">לחץ על כלי הנגינה המעופפים (גיטרות, תופים, פסנתרים...)</p> <div class="bg-red-50 border-2 border-red-200 rounded-xl p-3 mt-2"> <p class="text-md text-red-600 font-bold">זהירות מהמכשולים!</p> <p class="text-sm text-red-500 font-medium mt-1">לחיצה על תווים, כלי עבודה או חפצים לא קשורים תוריד לך נקודה אחורה!</p> </div> </div>;
+renderStep(html);
+}
+​function renderWelcome() {
+const html = `
+<div class="space-y-6">
+<h1 class="text-4xl sm:text-5xl font-bold text-sky-800 mb-2">מזל טוב להדס נריה פלד!</h1>
+<h2 class="text-2xl text-sky-600 font-medium">לרגל הגעתך לגיל מצוות</h2>
+​<div class="bg-white/60 rounded-2xl p-6 shadow-inner text-lg leading-relaxed border border-white my-6">
+<p class="mb-4">קיבלת שובר מתנה מיוחד המקנה לך <strong class="text-sky-700">3 חודשים של שיעורי מוזיקה</strong> (4 שיעורים בחודש)!</p>
+<p class="mb-4">המועד יקבע מראש בהתאם לפניות שלך.</p>
+<p>במידה ותבחר בשיעורי נגינה (פסנתר, גיטרות לסוגיהן או יוקליילי), יינתן לך כלי בהשאלה לתקופת הלימודים במידת הצורך.</p>
+</div>
+​<div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+<button onclick="goToStep('quiz1')" class="btn-rainbow px-8 py-4 rounded-full text-xl flex-1">
+עזור לי לבחור מה מתאים לי 🪄
+</button>
+<button onclick="goToStep('courses')" class="bg-white hover:bg-gray-50 text-sky-700 border-2 border-sky-200 px-8 py-4 rounded-full text-xl font-semibold transition-all flex-1 shadow-md hover:shadow-lg">
+אני כבר יודע מה אני רוצה! 🎸
+</button>
+</div>
+</div>
+`;
+renderStep(html);
+}
+​function renderQuiz1() {
+const activities = ['לנגן על כלי', 'לשיר', 'לתקלט (לשים מוזיקה)', 'ליצור מוזיקה', 'להפיק', 'למקסס ולערוך במחשב'];
+​let optionsHtml = activities.map((act) => <label class="custom-radio cursor-pointer block"> <input type="radio" name="activity" value="${act}" class="hidden" onchange="state.answers.activity = this.value"> <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-lg hover:border-yellow-300"> ${act} </div> </label>).join('');
+​const html = `
+<div class="space-y-6" id="quiz1-container">
+<h2 class="text-3xl font-bold text-sky-800">שאלה 1 מתוך 3</h2>
+<h3 class="text-xl text-gray-700">מה הכי היית רוצה לעשות? (בחר אחד)</h3>
+​<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-right mt-6">
+${optionsHtml}
+</div>
+​<div class="mt-8 flex justify-between">
+<button onclick="goToStep('welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+<button onclick="validateAndGo('quiz2', state.answers.activity !== '', 'אנא בחר אפשרות אחת כדי להמשיך', 'quiz1-container')" class="btn-rainbow px-8 py-3 rounded-full text-lg">המשך</button>
+</div>
+</div>
+`;
+renderStep(html);
+}
+​function renderQuiz2() {
+let optionsHtml = musicStyles.map((style) => <label class="custom-checkbox cursor-pointer block"> <input type="checkbox" value="${style}" class="hidden"  ${state.answers.styles.includes(style) ? 'checked' : ''} onchange="toggleStyle('${style}')"> <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-md hover:border-purple-300 text-center"> ${style} </div> </label>).join('');
+​const html = `
+<div class="space-y-6" id="quiz2-container">
+<h2 class="text-3xl font-bold text-sky-800">שאלה 2 מתוך 3</h2>
+<h3 class="text-xl text-gray-700">אילו סגנונות מוזיקליים אתה הכי אוהב? (אפשר לבחור כמה)</h3>
+​<div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
+${optionsHtml}
+</div>
+​<div class="mt-8 flex justify-between">
+<button onclick="goToStep('quiz1')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+<button onclick="validateAndGo('quiz3', state.answers.styles.length > 0, 'בחר לפחות סגנון אחד', 'quiz2-container')" class="btn-rainbow px-8 py-3 rounded-full text-lg">המשך</button>
+</div>
+</div>
+`;
+renderStep(html);
+}
+​function toggleStyle(style) {
+const index = state.answers.styles.indexOf(style);
+if (index > -1) {
+state.answers.styles.splice(index, 1);
+} else {
+state.answers.styles.push(style);
+}
+}
+​function renderQuiz3() {
+const html = `
+<div class="space-y-6">
+<h2 class="text-3xl font-bold text-sky-800">שאלה 3 מתוך 3</h2>
+<h3 class="text-xl text-gray-700">מי הם הזמרים, הזמרות או הלהקות שאתה הכי אוהב לשמוע? אילו שירים?</h3>
+​<div class="mt-6 text-right">
+<textarea id="artistsText" rows="4" class="w-full bg-white border-2 border-sky-200 rounded-xl p-4 text-lg focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-200 transition-all resize-none" placeholder="לדוגמה: שלמה ארצי, עומר אדם, הביטלס, שירים מהטיקטוק...">${state.answers.favoriteArtists}</textarea>
+</div>
+​<div class="mt-8 flex justify-between items-center">
+<button onclick="goToStep('quiz2')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+<button onclick="saveTextAndGo('courses')" class="btn-rainbow px-8 py-3 rounded-full text-lg">בוא נבחר שיעורים!</button>
+</div>
+</div>
+`;
+renderStep(html);
+}
+​function saveTextAndGo(nextStep) {
+state.answers.favoriteArtists = document.getElementById('artistsText').value;
+goToStep(nextStep);
+}
+​function renderCourses() {
+let message = "בחר את השיעורים שאתה רוצה ללמוד.";
+if (state.answers.activity !== '') {
+message = "לפי התשובות שלך, הנה כל האפשרויות. בחר מה שהכי מדבר אליך!";
+}
+​let optionsHtml = courses.map((course) => <label class="custom-checkbox cursor-pointer block text-right"> <input type="checkbox" value="${course.id}" class="hidden course-cb"  ${state.answers.courses.includes(course.id) ? 'checked' : ''} onchange="handleCourseSelection(this)"> <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-lg hover:border-pink-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2"> <span class="font-semibold">${course.name}</span> ${course.needsInstrument ? '<span class="text-xs bg-sky-100 text-sky-800 px-2 py-1 rounded-full whitespace-nowrap">אפשרות כלי בהשאלה</span>' : ''} </div> </label>).join('');
+​const html = `
+<div class="space-y-6" id="courses-container">
+<h2 class="text-3xl font-bold text-sky-800">בחירת שיעורים</h2>
+<p class="text-lg text-gray-700">${message}</p>
+<div class="bg-yellow-50 text-yellow-800 p-3 rounded-lg border border-yellow-200 text-sm font-medium">
+ניתן לבחור תחום אחד, או לשלב <strong>עד שני תחומים</strong> יחד.
+</div>
+​<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 h-64 overflow-y-auto pr-2 custom-scrollbar text-right" style="scrollbar-width: thin;">
+${optionsHtml}
+</div>
+​<div class="mt-8 flex justify-between">
+<button onclick="goToStep('${state.answers.activity !== '' ? 'quiz3' : 'welcome'}')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+<button id="btnContinueCourses" onclick="proceedFromCourses()" class="btn-rainbow px-8 py-3 rounded-full text-lg opacity-50 cursor-not-allowed" disabled>המשך לשעות וימים</button>
+</div>
+</div>
+`;
+renderStep(html);
+updateCourseContinueBtn();
+}
+​function handleCourseSelection(cb) {
+const courseId = cb.value;
+if (cb.checked) {
+if (state.answers.courses.length >= 2) {
+cb.checked = false;
+showCustomAlert("ניתן לבחור עד 2 תחומים לכל היותר.", "courses-container");
+return;
+}
+state.answers.courses.push(courseId);
+} else {
+state.answers.courses = state.answers.courses.filter(id => id !== courseId);
+}
+updateCourseContinueBtn();
+}
+​function updateCourseContinueBtn() {
+const btn = document.getElementById('btnContinueCourses');
+if (btn) {
+if (state.answers.courses.length > 0) {
+btn.disabled = false;
+btn.classList.remove('opacity-50', 'cursor-not-allowed');
+} else {
+btn.disabled = true;
+btn.classList.add('opacity-50', 'cursor-not-allowed');
+}
+}
+}
+​function proceedFromCourses() {
+const needsLoanDialog = state.answers.courses.some(courseId => {
+const course = courses.find(c => c.id === courseId);
+return course && course.needsInstrument;
+});
+​if (needsLoanDialog) {
+goToStep('instrument');
+} else {
+state.answers.needsLoan = false;
+goToStep('scheduling');
+}
+}
+​function renderInstrument() {
+const html = `
+<div class="space-y-6">
+<h2 class="text-3xl font-bold text-sky-800">השאלת כלי נגינה 🎸🎹</h2>
+<h3 class="text-xl text-gray-700">בחרת בשיעורי נגינה! האם יש לך כלי בבית או שתרצה שנישאיל לך אחד לתקופת הלימודים?</h3>
+​<div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+<button onclick="setLoanAndProceed(true)" class="bg-white hover:bg-sky-50 text-sky-800 border-2 border-sky-300 px-8 py-4 rounded-xl text-xl font-semibold transition-all flex-1">
+כן, אשמח להשאלת כלי
+</button>
+<button onclick="setLoanAndProceed(false)" class="bg-white hover:bg-sky-50 text-sky-800 border-2 border-sky-300 px-8 py-4 rounded-xl text-xl font-semibold transition-all flex-1">
+לא, יש לי כלי משלי
+</button>
+</div>
+​<div class="mt-8 text-right">
+<button onclick="goToStep('courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור לבחירת שיעורים</button>
+</div>
+</div>
+`;
+renderStep(html);
+}
+​function setLoanAndProceed(needs) {
+state.answers.needsLoan = needs;
+goToStep('scheduling');
+}
+​function renderScheduling() {
+const days = [
+{ id: 'א', name: 'ראשון' }, { id: 'ב', name: 'שני' },
+{ id: 'ג', name: 'שלישי' }, { id: 'ד', name: 'רביעי' },
+{ id: 'ה', name: 'חמישי' }
+];
+​const hours = ['14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+​let daysHtml = days.map(day => <label class="custom-checkbox cursor-pointer block text-center"> <input type="checkbox" value="${day.id}" class="hidden"  ${state.answers.availability.days.includes(day.id) ? 'checked' : ''} onchange="toggleDay('${day.id}')"> <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all hover:border-blue-300 font-bold text-lg"> יום ${day.id}' </div> </label>).join('');
+​let startHoursHtml = hours.slice(0, -1).map(h => <option value="${h}" ${state.answers.availability.startHour === h ? 'selected' : ''}>${h}</option>).join('');
+let endHoursHtml = hours.slice(1).map(h => <option value="${h}" ${state.answers.availability.endHour === h ? 'selected' : ''}>${h}</option>).join('');
+​const html = `
+<div class="space-y-6" id="schedule-container">
+<h2 class="text-3xl font-bold text-sky-800">מתי נח לך ללמוד? 🗓️</h2>
+<p class="text-lg text-gray-700">סמן את הימים והשעות הפנויות שלך (ראשון עד חמישי, 14:00 עד 20:00).</p>
+​<div class="bg-white/60 p-4 rounded-xl shadow-sm border border-sky-50 mt-4">
+<h4 class="text-md font-semibold text-sky-900 mb-3 text-right">באילו ימים? (אפשר לבחור כמה)</h4>
+<div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+${daysHtml}
+</div>
+</div>
+​<div class="bg-white/60 p-4 rounded-xl shadow-sm border border-sky-50 mt-4 flex flex-col sm:flex-row gap-4 items-center justify-center">
+<div class="flex items-center gap-2">
+<span class="text-sky-900 font-medium">החל משעה:</span>
+<select id="startHour" onchange="updateHours()" class="bg-white border border-sky-200 rounded-lg p-2 text-lg focus:outline-none focus:border-sky-400 font-bold">
+${startHoursHtml}
+</select>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sky-900 font-medium">ועד שעה:</span>
+<select id="endHour" onchange="updateHours()" class="bg-white border border-sky-200 rounded-lg p-2 text-lg focus:outline-none focus:border-sky-400 font-bold">
+${endHoursHtml}
+</select>
+</div>
+</div>
+​<div class="mt-8 flex justify-between items-center">
+<button onclick="goBackFromScheduling()" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
+<button id="btnContinueSchedule" onclick="proceedToSummary()" class="btn-rainbow px-8 py-3 rounded-full text-lg ${state.answers.availability.days.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}" ${state.answers.availability.days.length === 0 ? 'disabled' : ''}>הפקת השובר!</button>
+</div>
+</div>
+`;
+renderStep(html);
+}
+​function toggleDay(dayId) {
+const index = state.answers.availability.days.indexOf(dayId);
+if (index > -1) {
+state.answers.availability.days.splice(index, 1);
+} else {
+state.answers.availability.days.push(dayId);
+}
+const btn = document.getElementById('btnContinueSchedule');
+if (btn) {
+if (state.answers.availability.days.length > 0) {
+btn.disabled = false;
+btn.classList.remove('opacity-50', 'cursor-not-allowed');
+} else {
+btn.disabled = true;
+btn.classList.add('opacity-50', 'cursor-not-allowed');
+}
+}
+}
+​function updateHours() {
+state.answers.availability.startHour = document.getElementById('startHour').value;
+state.answers.availability.endHour = document.getElementById('endHour').value;
+}
+​function goBackFromScheduling() {
+const needsLoanDialog = state.answers.courses.some(courseId => {
+const course = courses.find(c => c.id === courseId);
+return course && course.needsInstrument;
+});
+if (needsLoanDialog) {
+goToStep('instrument');
+} else {
+goToStep('courses');
+}
+}
+​function proceedToSummary() {
+const start = parseInt(state.answers.availability.startHour.split(':')[0]);
+const end = parseInt(state.answers.availability.endHour.split(':')[0]);
+if (start >= end) {
+showCustomAlert("שעת הסיום חייבת להיות מאוחרת משעת ההתחלה.", "schedule-container");
+return;
+}
+goToStep('summary');
+}
+​function renderSummary() {
+const selectedNames = state.answers.courses.map(id => {
+return courses.find(c => c.id === id).name;
+}).join(' + ');
+​let loanText = "";
+if (state.answers.needsLoan === true) {
+loanText = "<p class='mt-3 text-pink-600 font-bold bg-pink-50 p-2 rounded-lg'>* רשמנו לעצמנו להכין עבורך כלי נגינה להשאלה.</p>";
+}
+​const sortedDays = state.answers.availability.days.sort((a,b) => "אבגדה".indexOf(a) - "אבגדה".indexOf(b));
+const daysText = sortedDays.map(d => "'" + d).join(', ');
+const availabilityText = <div class="bg-sky-50 text-sky-800 p-3 rounded-lg border border-sky-100 mt-4 text-center"> <strong>זמינות לשיעורים:</strong><br/>ימים ${daysText}<br/>בין השעות ${state.answers.availability.startHour} - ${state.answers.availability.endHour} </div>;
+​const html = `
+<div class="space-y-6" id="summaryContent">
+<div class="text-6xl mb-2">🎉</div>
+<h2 class="text-4xl font-bold text-sky-800 mb-2">מעולה, הדס נריה!</h2>
+<h3 class="text-2xl text-gray-700">הבחירה שלך נקלטה בהצלחה.</h3>
+​<div class="bg-white/90 rounded-2xl p-6 shadow-md border border-sky-100 my-6 inline-block text-right max-w-lg mx-auto w-full">
+<p class="text-lg text-gray-600 mb-1">השיעורים שבחרת:</p>
+<p class="text-2xl font-bold text-sky-900 mb-4">${selectedNames}</p>
+​<div class="h-px bg-gray-200 w-full mb-4"></div>
+​<p class="text-md text-gray-800 font-medium">השובר תקף ל-3 חודשים (4 שיעורים בחודש).</p>
+${availabilityText}
+${loanText}
+</div>
+​<p class="text-xl font-bold text-sky-700 mt-2 mb-6">שיהיה המון מזל טוב והצלחה במוזיקה!</p>
+​<div class="flex flex-col sm:flex-row gap-4 justify-center print-hide" id="actionButtons">
+<button onclick="downloadPDF()" class="bg-[#25D366] hover:bg-[#128C7E] text-white shadow-lg px-6 py-4 rounded-full text-xl font-semibold transition-all flex items-center justify-center gap-3">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+</svg>
+הורד שובר כ-PDF
+</button>
+</div>
+</div>
+`;
+renderStep(html);
+fireConfetti();
+}
+​function downloadPDF() {
+const buttons = document.getElementById('actionButtons');
+buttons.style.display = 'none';
+​const element = document.getElementById('app');
+const opt = {
+margin:       10,
+filename:     'Music_Gift_Voucher_Hadas.pdf',
+image:        { type: 'jpeg', quality: 0.98 },
+html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
+jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+};
+​html2pdf().set(opt).from(element).save().then(() => {
+buttons.style.display = 'flex';
+});
+}
+​function validateAndGo(nextStep, isValid, errorMsg, containerId) {
+if (isValid) {
+goToStep(nextStep);
+} else {
+showCustomAlert(errorMsg, containerId);
+}
+}
+​function goToStep(stepName) {
+state.currentStep = stepName;
+switch(stepName) {
+case 'entry': renderEntry(); break;
+case 'welcome': renderWelcome(); break;
+case 'quiz1': renderQuiz1(); break;
+case 'quiz2': renderQuiz2(); break;
+case 'quiz3': renderQuiz3(); break;
+case 'courses': renderCourses(); break;
+case 'instrument': renderInstrument(); break;
+case 'scheduling': renderScheduling(); break;
+case 'summary': renderSummary(); break;
+}
+}
+​function fireConfetti() {
+const colors = ['#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff'];
+for(let i=0; i<60; i++) {
+let confetti = document.createElement('div');
+confetti.style.position = 'fixed';
+confetti.style.width = '10px';
+confetti.style.height = '10px';
+confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+confetti.style.left = Math.random() * 100 + 'vw';
+confetti.style.top = '-10px';
+confetti.style.borderRadius = '50%';
+confetti.style.zIndex = '100';
+confetti.style.pointerEvents = 'none';
+document.body.appendChild(confetti);
+​let duration = Math.random() * 3 + 2;
+let delay = Math.random() * 2;
+​confetti.animate([
+{ transform: translate3d(0,0,0) rotate(0deg), opacity: 1 },
+{ transform: translate3d(${Math.random()*200 - 100}px, 100vh, 0) rotate(${Math.random()*360}deg), opacity: 0 }
+], {
+duration: duration * 1000,
+delay: delay * 1000,
+easing: 'cubic-bezier(.37,0,.63,1)',
+fill: 'forwards'
+});
+​setTimeout(() => confetti.remove(), (duration + delay) * 1000);
+}
+}
+​goToStep('entry');
+</script>
 </body>
 </html>
