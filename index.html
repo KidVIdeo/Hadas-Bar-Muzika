@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>שובר מתנה - הדס נריה פלד</title>
     
-    <!-- ספריות חיצוניות -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Varela+Round&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -28,7 +27,7 @@
             font-family: 'Fredoka', sans-serif;
         }
 
-        /* כפתורי קשת בענן */
+        /* עיצוב כפתורי קשת בענן */
         .btn-rainbow {
             background: linear-gradient(90deg, 
                 rgba(255,179,186,1) 0%, 
@@ -43,6 +42,7 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
         }
 
         .btn-rainbow:hover {
@@ -57,7 +57,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* אנימציית עננים */
         .clouds-container {
             position: fixed;
             top: 0;
@@ -101,30 +100,28 @@
             100% { left: 100vw; }
         }
 
-        /* אלמנטים במשחק */
         .music-bg-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 5;
+            z-index: 50; /* מעל הכל בזמן המשחק */
             overflow: hidden;
-            pointer-events: none;
+            pointer-events: none; /* המיכל מתעלם מלחיצות */
         }
 
         .floating-music {
             position: absolute;
             font-size: 3.5rem;
             opacity: 0.85;
-            animation: floatUp linear infinite, sway ease-in-out infinite alternate;
             bottom: -100px;
             filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.15));
             cursor: pointer;
             transition: transform 0.2s;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            pointer-events: auto;
+            pointer-events: auto; /* הכלים עצמם מקבלים לחיצות */
         }
         
         .floating-music:hover {
@@ -142,6 +139,9 @@
             pointer-events: none;
         }
 
+        @keyframes floatUp1 { 0% { transform: translateY(0) rotate(-15deg); opacity: 0; } 10% { opacity: 0.9; } 90% { opacity: 0.9; } 100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; } }
+        @keyframes floatUp2 { 0% { transform: translateY(0) rotate(15deg); opacity: 0; } 10% { opacity: 0.9; } 90% { opacity: 0.9; } 100% { transform: translateY(-120vh) rotate(-20deg); opacity: 0; } }
+
         @keyframes catchGoodAnim {
             0% { transform: scale(1); opacity: 0.8; }
             40% { transform: scale(1.6) rotate(15deg); opacity: 1; filter: brightness(1.5) drop-shadow(0 0 15px #4ade80); }
@@ -154,19 +154,6 @@
             100% { transform: scale(0); opacity: 0; }
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(-15deg); opacity: 0; }
-            10% { opacity: 0.9; }
-            90% { opacity: 0.9; }
-            100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
-        }
-
-        @keyframes sway {
-            0% { margin-left: -50px; }
-            100% { margin-left: 50px; }
-        }
-
-        /* עיצוב כללי לאפליקציה */
         .app-container {
             position: relative;
             z-index: 10;
@@ -212,7 +199,6 @@
 </head>
 <body class="p-4 sm:p-8">
 
-    <!-- רקע עננים -->
     <div class="clouds-container print-hide">
         <div class="cloud cloud1"></div>
         <div class="cloud cloud2" style="animation-delay: -10s;"></div>
@@ -220,39 +206,36 @@
         <div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.5;"></div>
     </div>
 
-    <!-- שכבת המשחק -->
     <div class="music-bg-container print-hide" id="music-layer">
-        <!-- ==== כלי נגינה (אמיתיים - מעט יותר איטיים, מזכים בנקודה) ==== -->
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation-duration: 7s; animation-delay: 0s;">🎸</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 25%; animation-duration: 8s; animation-delay: -1s;">🎹</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 45%; animation-duration: 6.5s; animation-delay: -2s;">🥁</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 65%; animation-duration: 7.5s; animation-delay: -3s;">🎷</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 80%; animation-duration: 6.8s; animation-delay: -1.5s;">🎺</div>
-        <div class="floating-music" onclick="catchItem(this, true)" style="left: 15%; animation-duration: 7.2s; animation-delay: -2.5s;">🎻</div>
+        <!-- ==== כלי נגינה (אמיתיים - מזכים בנקודה) ==== -->
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 5%; animation: floatUp1 4s linear infinite; animation-delay: 0s;">🎸</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 25%; animation: floatUp2 5s linear infinite; animation-delay: -1s;">🎹</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 45%; animation: floatUp1 4.5s linear infinite; animation-delay: -2s;">🥁</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 65%; animation: floatUp2 5.5s linear infinite; animation-delay: -3s;">🎷</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 80%; animation: floatUp1 4.8s linear infinite; animation-delay: -1.5s;">🎺</div>
+        <div class="floating-music" onclick="catchItem(this, true)" style="left: 15%; animation: floatUp2 4.2s linear infinite; animation-delay: -2.5s;">🎻</div>
 
-        <!-- ==== חפצים מבלבלים / תווים / כלי עבודה (מהירים יותר, מורידים נקודה) ==== -->
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 10%; animation-duration: 3.5s; animation-delay: -1s;">🎵</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 30%; animation-duration: 3.8s; animation-delay: -2.5s;">🔨</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 50%; animation-duration: 3.2s; animation-delay: -0.5s;">🔧</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 70%; animation-duration: 3.6s; animation-delay: -3s;">⚽</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 90%; animation-duration: 3.9s; animation-delay: -1.5s;">🎶</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 40%; animation-duration: 3.4s; animation-delay: -4s;">✂️</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 60%; animation-duration: 3.7s; animation-delay: -2s;">✏️</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 80%; animation-duration: 3.3s; animation-delay: -1.2s;">🍔</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 18%; animation-duration: 3.5s; animation-delay: -3.5s;">📚</div>
-        <div class="floating-music" onclick="catchItem(this, false)" style="left: 88%; animation-duration: 3.8s; animation-delay: -0.8s;">🍎</div>
+        <!-- ==== חפצים מבלבלים ותווים (מהירים יותר, מורידים נקודה) ==== -->
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 10%; animation: floatUp2 3s linear infinite; animation-delay: -0.5s;">🎵</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 30%; animation: floatUp1 3.2s linear infinite; animation-delay: -2s;">🔨</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 50%; animation: floatUp2 2.8s linear infinite; animation-delay: -1s;">🔧</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 70%; animation: floatUp1 3.5s linear infinite; animation-delay: -0.2s;">⚽</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 90%; animation: floatUp2 3.1s linear infinite; animation-delay: -1.8s;">🎶</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 40%; animation: floatUp1 2.9s linear infinite; animation-delay: -3s;">✂️</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 60%; animation: floatUp2 3.4s linear infinite; animation-delay: -1.2s;">✏️</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 85%; animation: floatUp1 3.7s linear infinite; animation-delay: -2.7s;">🍔</div>
+        <div class="floating-music" onclick="catchItem(this, false)" style="left: 20%; animation: floatUp2 3.3s linear infinite; animation-delay: -1.5s;">📚</div>
     </div>
     
-    <!-- מסך ניצחון וסרטון דרייב (כ-iframe) -->
-    <div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/90 backdrop-blur-md flex-col items-center justify-between py-8 px-4 print-hide">
-        <div class="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-black mt-2 flex items-center justify-center">
+    <div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-8 px-4 print-hide">
+        <div class="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-black flex items-center justify-center">
             
-            <!-- שימוש ב-iframe של גוגל דרייב - הפתרון הכי אמין -->
-            <iframe id="local-video-player" src="https://drive.google.com/file/d/16-r46rJcO5ZAvAuPQOfVmXfKrmrKiXjf/preview?autoplay=1" class="w-full h-full" allow="autoplay" allowfullscreen></iframe>
+            <!-- iframe של גוגל דרייב -->
+            <iframe id="local-video-player" src="https://drive.google.com/file/d/16-r46rJcO5ZAvAuPQOfVmXfKrmrKiXjf/preview?autoplay=1" class="w-full h-full border-0" allow="autoplay" allowfullscreen></iframe>
 
         </div>
-        <div class="mt-4 text-center">
-            <h2 class="text-3xl font-bold text-sky-800 mb-4 drop-shadow-md">כל הכבוד! הצלחת לתפוס 13 כלי נגינה! 🎉</h2>
+        <div class="mt-8 text-center">
+            <h2 class="text-3xl font-bold text-sky-800 mb-6 drop-shadow-md">כל הכבוד! תפסת 13 כלי נגינה! 🎉</h2>
             <button onclick="startApp()" class="btn-rainbow px-10 py-4 rounded-full text-2xl shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
                 ברוך הבא לעולם המוזיקה!
             </button>
@@ -265,17 +248,18 @@
     </div>
 
     <script>
+        // שימוש במרכאות כפולות מחסן מפני תקלות ציטוט
         const courses = [
-            { id: 'piano', name: 'פסנתר', needsInstrument: true },
-            { id: 'vocals', name: 'שירה ופיתוח קול', needsInstrument: false },
-            { id: 'production', name: 'הפקה מוזיקלית', needsInstrument: false },
-            { id: 'computer', name: 'שימוש במחשב - תכנות, עריכה והקלטה', needsInstrument: false },
-            { id: 'guitar_classic', name: 'גיטרה קלאסית', needsInstrument: true },
-            { id: 'guitar_acoustic', name: 'גיטרה אקוסטית', needsInstrument: true },
-            { id: 'guitar_electric', name: 'גיטרה חשמלית', needsInstrument: true },
-            { id: 'guitar_bass', name: 'גיטרה בס', needsInstrument: true },
-            { id: 'ukulele', name: 'יוקליילי', needsInstrument: true },
-            { id: 'dj', name: 'תקליטנות דיג\'יי (מבוא, Virtual DJ וקונטרולר)', needsInstrument: false }
+            { id: "piano", name: "פסנתר", needsInstrument: true },
+            { id: "vocals", name: "שירה ופיתוח קול", needsInstrument: false },
+            { id: "production", name: "הפקה מוזיקלית", needsInstrument: false },
+            { id: "computer", name: "שימוש במחשב - תכנות, עריכה והקלטה", needsInstrument: false },
+            { id: "guitar_classic", name: "גיטרה קלאסית", needsInstrument: true },
+            { id: "guitar_acoustic", name: "גיטרה אקוסטית", needsInstrument: true },
+            { id: "guitar_electric", name: "גיטרה חשמלית", needsInstrument: true },
+            { id: "guitar_bass", name: "גיטרה בס", needsInstrument: true },
+            { id: "ukulele", name: "יוקליילי", needsInstrument: true },
+            { id: "dj", name: "תקליטנות דיג'יי (מבוא, Virtual DJ וקונטרולר)", needsInstrument: false }
         ];
 
         const musicStyles = [
@@ -303,8 +287,8 @@
         function setGameMode(active) {
             const container = document.getElementById('music-layer');
             if (container) {
-                container.style.pointerEvents = active ? 'auto' : 'none';
-                container.style.zIndex = active ? '50' : '5';
+                // העלמה מוחלטת של הכלים המעופפים בסוף המשחק כדי שלא יפריעו
+                container.style.display = active ? 'block' : 'none';
             }
         }
         
@@ -351,7 +335,7 @@
         }
 
         function triggerWin() {
-            setGameMode(false); 
+            setGameMode(false); // מסתיר את כלי הנגינה המעופפים
             
             document.getElementById('app').style.display = 'none';
             const winScreen = document.getElementById('win-screen');
@@ -365,7 +349,7 @@
             winScreen.classList.add('hidden');
             winScreen.classList.remove('flex');
             
-            // עצירת הסרטון על ידי ריענון ה-iframe
+            // עצירת הסרטון על ידי ריענון מקור ה-iframe
             const videoPlayer = document.getElementById('local-video-player');
             if (videoPlayer) {
                 videoPlayer.src = videoPlayer.src;
@@ -880,6 +864,7 @@
             }
         }
 
+        // התחל את המשחק!
         goToStep('entry');
     </script>
 </body>
