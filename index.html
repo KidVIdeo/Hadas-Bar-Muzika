@@ -10,7 +10,6 @@
 <style>
 body {
     font-family: 'Varela Round', sans-serif;
-    background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
     min-height: 100vh;
     overflow-x: hidden;
     margin: 0;
@@ -20,6 +19,21 @@ body {
     align-items: center;
     color: #2D3748;
 }
+.main-bg {
+    position: fixed;
+    inset: 0;
+    background-image: url('image2.jpeg');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+}
+.main-bg-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(3px);
+    z-index: -1;
+}
 h1, h2, h3, .font-bold, .font-semibold {
     font-family: 'Fredoka', sans-serif;
 }
@@ -28,13 +42,9 @@ h1, h2, h3, .font-bold, .font-semibold {
     background-size: 200% 200%;
     animation: rainbowShift 5s ease infinite;
     color: #2D3748;
-    font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 .btn-rainbow:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     filter: brightness(1.05);
 }
 @keyframes rainbowShift {
@@ -56,7 +66,7 @@ h1, h2, h3, .font-bold, .font-semibold {
     position: absolute;
     background: white;
     border-radius: 50px;
-    opacity: 0.8;
+    opacity: 0.6;
     animation: float linear infinite;
 }
 .cloud::before, .cloud::after {
@@ -68,10 +78,10 @@ h1, h2, h3, .font-bold, .font-semibold {
 .cloud1 { width: 100px; height: 40px; top: 15%; left: -150px; animation-duration: 35s; }
 .cloud1::before { width: 50px; height: 50px; top: -25px; left: 15px; }
 .cloud1::after { width: 40px; height: 40px; top: -15px; right: 15px; }
-.cloud2 { width: 140px; height: 50px; top: 40%; left: -200px; animation-duration: 45s; opacity: 0.6; transform: scale(1.2); }
+.cloud2 { width: 140px; height: 50px; top: 40%; left: -200px; animation-duration: 45s; opacity: 0.4; transform: scale(1.2); }
 .cloud2::before { width: 70px; height: 70px; top: -35px; left: 20px; }
 .cloud2::after { width: 60px; height: 60px; top: -20px; right: 20px; }
-.cloud3 { width: 80px; height: 30px; top: 70%; left: -100px; animation-duration: 25s; opacity: 0.9; transform: scale(0.8); }
+.cloud3 { width: 80px; height: 30px; top: 70%; left: -100px; animation-duration: 25s; opacity: 0.7; transform: scale(0.8); }
 .cloud3::before { width: 40px; height: 40px; top: -20px; left: 10px; }
 .cloud3::after { width: 30px; height: 30px; top: -10px; right: 15px; }
 @keyframes float {
@@ -91,10 +101,10 @@ h1, h2, h3, .font-bold, .font-semibold {
 .floating-music {
     position: absolute;
     font-size: 3.5rem;
-    opacity: 0.9;
+    opacity: 0.95;
     animation: floatUp linear infinite;
     bottom: -100px;
-    filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.15));
+    filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.25));
     cursor: pointer;
     transition: transform 0.2s;
     user-select: none;
@@ -124,15 +134,15 @@ h1, h2, h3, .font-bold, .font-semibold {
 }
 @keyframes floatUp {
     0% { transform: translateY(0) rotate(-15deg); opacity: 0; }
-    10% { opacity: 0.9; }
-    90% { opacity: 0.9; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
     100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
 }
 .app-container {
     position: relative;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
     border: 2px solid rgba(255, 255, 255, 0.8);
     transition: all 0.4s ease;
 }
@@ -164,30 +174,34 @@ h1, h2, h3, .font-bold, .font-semibold {
         margin: 0 !important;
     }
     body { background: white !important; }
+    .main-bg, .main-bg-overlay { display: none !important; }
 }
 </style>
 </head>
 <body class="p-4 sm:p-8">
 
+<!-- רקע המשחק -->
+<div class="main-bg print-hide"></div>
+<div class="main-bg-overlay print-hide"></div>
+
 <div class="clouds-container print-hide">
     <div class="cloud cloud1"></div>
     <div class="cloud cloud2" style="animation-delay: -10s;"></div>
     <div class="cloud cloud3" style="animation-delay: -20s;"></div>
-    <div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.5;"></div>
+    <div class="cloud cloud1" style="top: 80%; animation-delay: -5s; transform: scale(1.5); opacity: 0.3;"></div>
 </div>
 
 <div class="music-bg-container print-hide" id="music-layer"></div>
 
-<!-- מסך ניצחון והפעלת וידאו קבוע -->
-<div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-6 px-4 print-hide">
-    <h2 class="text-3xl sm:text-4xl font-bold text-sky-800 mb-6 drop-shadow-md text-center">כל הכבוד! 🎉<br>תפסת את כל הכלים!</h2>
+<!-- מסך ניצחון והפעלת וידאו עם רקע מותאם -->
+<div id="win-screen" class="hidden fixed inset-0 z-[60] flex-col items-center justify-center py-6 px-4 print-hide" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.85)), url('image1.jfif') center/cover;">
+    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-center">כל הכבוד! 🎉<br>תפסת את כל הכלים!</h2>
     
     <div class="w-full max-w-2xl bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative aspect-video flex items-center justify-center group" onclick="playRewardVideo()">
         <video id="local-video-player" playsinline preload="auto" class="w-full h-full object-contain">
             <source src="Kidd-Video.mp4" type="video/mp4">
             הדפדפן שלך אינו תומך בהפעלת וידאו.
         </video>
-        <!-- כפתור Play ענק מובנה -->
         <div id="play-btn-overlay" class="absolute inset-0 flex items-center justify-center bg-black/40 cursor-pointer hover:bg-black/20 transition-colors">
             <div class="w-24 h-24 bg-white/90 rounded-full flex items-center justify-center text-6xl pl-3 text-sky-800 shadow-lg transform group-hover:scale-110 transition-transform">
                 ▶
@@ -197,7 +211,7 @@ h1, h2, h3, .font-bold, .font-semibold {
     
     <div class="mt-8 text-center w-full">
         <button onclick="continueAfterVideo()" class="btn-rainbow px-10 py-3 rounded-full text-xl shadow-xl hover:scale-105 transition-transform duration-300 w-full sm:w-auto font-bold text-sky-900 border-2 border-white">
-            המשך לקבלת השובר!
+            המשך לקבלת השובר המיוחד!
         </button>
     </div>
 </div>
@@ -205,7 +219,7 @@ h1, h2, h3, .font-bold, .font-semibold {
 <div id="app" class="app-container w-full max-w-xl mx-auto rounded-3xl shadow-2xl p-6 sm:p-8 text-center relative z-10">
 </div>
 
-<div id="floating-counter" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 bg-white/90 backdrop-blur-md px-8 py-3 rounded-full shadow-lg border-2 border-sky-300 text-4xl font-bold text-sky-900 print-hide" style="display:none;">
+<div id="floating-counter" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 bg-white/90 backdrop-blur-md px-8 py-3 rounded-full shadow-xl border-2 border-sky-300 text-4xl font-bold text-sky-900 print-hide" style="display:none;">
     <span id="counter-display">0</span>/13
 </div>
 
@@ -269,15 +283,15 @@ function renderIntro() {
     const html = `
         <div class="space-y-6 py-4">
             <h1 class="text-4xl font-bold text-sky-800 mb-2">מזל טוב להדס נריה!</h1>
-            <div class="bg-sky-50 p-6 rounded-2xl border-2 border-sky-200 text-lg text-gray-800">
-                <p class="mb-4">כדי לפתוח את השובר המיוחד שלך, עליך לשחק במשחק קצר:</p>
-                <p class="font-bold text-2xl text-sky-700 mb-4">תפוס 13 כלי נגינה אמיתיים!</p>
-                <p class="text-sm text-red-600 font-bold bg-red-100 p-3 rounded-xl inline-block border border-red-200">
+            <div class="bg-white/80 p-6 rounded-2xl border border-sky-100 text-lg text-gray-800 shadow-sm backdrop-blur-sm">
+                <p class="mb-4">כדי לפתוח את השובר המיוחד שלך, עלייך לשחק במשחק קצר:</p>
+                <p class="font-bold text-2xl text-sky-700 mb-4">תפסי 13 כלי נגינה אמיתיים!</p>
+                <p class="text-sm text-red-600 font-bold bg-red-50 p-3 rounded-xl inline-block border border-red-200">
                     זהירות: לחיצה על חפצים אחרים ותווים תוריד לך נקודות!
                 </p>
             </div>
             <button onclick="goToStep('entry')" class="btn-rainbow px-10 py-4 rounded-full text-2xl shadow-xl hover:scale-105 transition-transform w-full sm:w-auto font-bold border-2 border-white">
-                התחל במשחק!
+                התחילי במשחק!
             </button>
         </div>
     `;
@@ -457,16 +471,22 @@ function renderEntry() {
 function renderWelcome() {
     const html = `
         <div class="space-y-4">
-            <h1 class="text-3xl font-bold text-sky-800 mb-1">ברוך הבא לעולם המוזיקה!</h1>
-            <h2 class="text-xl text-sky-600 font-medium">הדס נריה פלד - לרגל הגעתך לגיל מצוות</h2>
-            <div class="bg-white/60 rounded-2xl p-4 shadow-inner text-base leading-relaxed border border-white my-4">
-                <p class="mb-2">קיבלת שובר מתנה מיוחד המקנה לך <strong class="text-sky-700">3 חודשים של שיעורי מוזיקה</strong> (4 שיעורים בחודש)!</p>
-                <p class="mb-2">המועד יקבע מראש בהתאם לפניות שלך.</p>
-                <p class="text-sm">במידה ותבחר בשיעורי נגינה, יינתן לך כלי בהשאלה לתקופת הלימודים במידת הצורך.</p>
+            <h1 class="text-3xl sm:text-4xl font-bold text-sky-800 mb-2">ברוכה הבאה לעולם המוזיקה! 🎵</h1>
+            <h2 class="text-xl sm:text-2xl text-sky-600 font-medium">הדס נריה היקרה - מזל טוב לרגל הגעתך לגיל מצוות!</h2>
+            
+            <div class="bg-white/90 rounded-2xl p-5 shadow-sm text-lg leading-relaxed border border-sky-100 my-5 backdrop-blur-sm text-right">
+                <p class="mb-3">כהוקרה על הדרך המיוחדת שלך, הוענק לך שובר מתנה אקסקלוסיבי המקנה לך <br><strong class="text-sky-700 text-xl block mt-1">3 חודשים של שיעורי מוזיקה מתנה</strong> <span class="text-sm">(4 שיעורים בחודש)</span>.</p>
+                <p class="mb-4">אנו נתאים את מועדי השיעורים בדיוק ללוח הזמנים שנוח לך.</p>
+                
+                <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex gap-3 items-start">
+                    <span class="text-2xl">✨</span>
+                    <p class="text-base text-gray-700 m-0">בנוסף, אם תבחרי ללמוד לנגן על כלי (פסנתר, גיטרות או יוקליילי), נדאג לספק לך <strong>כלי נגינה איכותי בהשאלה</strong> למשך כל תקופת הלימודים במידת הצורך.</p>
+                </div>
             </div>
+            
             <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-                <button onclick="goToStep('quiz1')" class="btn-rainbow px-6 py-3 rounded-full text-lg flex-1">עזור לי לבחור מה מתאים לי 🪄</button>
-                <button onclick="goToStep('courses')" class="bg-white hover:bg-gray-50 text-sky-700 border-2 border-sky-200 px-6 py-3 rounded-full text-lg font-semibold transition-all flex-1 shadow-md">אני כבר יודע מה אני רוצה! 🎸</button>
+                <button onclick="goToStep('quiz1')" class="btn-rainbow px-6 py-3 rounded-full text-lg flex-1 font-bold shadow-md hover:scale-105 transition-transform">בואו נגלה מה הכי מתאים לי 🪄</button>
+                <button onclick="goToStep('courses')" class="bg-white hover:bg-gray-50 text-sky-700 border-2 border-sky-200 px-6 py-3 rounded-full text-lg font-semibold transition-all flex-1 shadow-md hover:scale-105">אני כבר יודעת מה אני רוצה! 🎸</button>
             </div>
         </div>
     `;
@@ -478,18 +498,18 @@ function renderQuiz1() {
     let optionsHtml = activities.map(act => `
         <label class="custom-radio cursor-pointer block">
             <input type="radio" name="activity" value="${act}" class="hidden" onchange="state.answers.activity = this.value">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-md hover:border-yellow-300">${act}</div>
+            <div class="bg-white/80 border-2 border-sky-100 rounded-xl p-3 transition-all text-md hover:border-yellow-300 backdrop-blur-sm">${act}</div>
         </label>
     `).join("");
     
     const html = `
         <div class="space-y-4" id="quiz1-container">
             <h2 class="text-2xl font-bold text-sky-800">שאלה 1 מתוך 3</h2>
-            <h3 class="text-lg text-gray-700">מה הכי היית רוצה לעשות? (בחר אחד)</h3>
+            <h3 class="text-lg text-gray-700 font-semibold">מה הכי היית רוצה לעשות? (בחרי אחד)</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-right mt-4">${optionsHtml}</div>
-            <div class="mt-8 flex justify-between">
-                <button onclick="goToStep('welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('quiz2', state.answers.activity !== '', 'אנא בחר אפשרות אחת כדי להמשיך', 'quiz1-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">המשך</button>
+            <div class="mt-8 flex justify-between items-center border-t border-gray-200 pt-4">
+                <button onclick="goToStep('welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold transition-colors">חזור</button>
+                <button onclick="validateAndGo('quiz2', state.answers.activity !== '', 'אנא בחרי אפשרות אחת כדי להמשיך', 'quiz1-container')" class="btn-rainbow px-8 py-2 rounded-full text-base font-bold shadow-sm hover:shadow-md transition-shadow">המשך</button>
             </div>
         </div>
     `;
@@ -500,18 +520,18 @@ function renderQuiz2() {
     let optionsHtml = musicStyles.map(style => `
         <label class="custom-checkbox cursor-pointer block">
             <input type="checkbox" value="${style}" class="hidden" ${state.answers.styles.includes(style) ? "checked" : ""} onchange="toggleStyle('${style}')">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-sm hover:border-purple-300 text-center">${style}</div>
+            <div class="bg-white/80 border-2 border-sky-100 rounded-xl p-3 transition-all text-sm hover:border-purple-300 text-center backdrop-blur-sm">${style}</div>
         </label>
     `).join("");
     
     const html = `
         <div class="space-y-4" id="quiz2-container">
             <h2 class="text-2xl font-bold text-sky-800">שאלה 2 מתוך 3</h2>
-            <h3 class="text-lg text-gray-700">אילו סגנונות אתה הכי אוהב? (אפשר לבחור כמה)</h3>
+            <h3 class="text-lg text-gray-700 font-semibold">אילו סגנונות את הכי אוהבת? (אפשר לבחור כמה)</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">${optionsHtml}</div>
-            <div class="mt-8 flex justify-between">
-                <button onclick="goToStep('quiz1')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('quiz3', state.answers.styles.length > 0, 'בחר לפחות סגנון אחד', 'quiz2-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">המשך</button>
+            <div class="mt-8 flex justify-between items-center border-t border-gray-200 pt-4">
+                <button onclick="goToStep('quiz1')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold transition-colors">חזור</button>
+                <button onclick="validateAndGo('quiz3', state.answers.styles.length > 0, 'בחרי לפחות סגנון אחד', 'quiz2-container')" class="btn-rainbow px-8 py-2 rounded-full text-base font-bold shadow-sm hover:shadow-md transition-shadow">המשך</button>
             </div>
         </div>
     `;
@@ -531,13 +551,13 @@ function renderQuiz3() {
     const html = `
         <div class="space-y-4">
             <h2 class="text-2xl font-bold text-sky-800">שאלה 3 מתוך 3</h2>
-            <h3 class="text-lg text-gray-700">מי הם הזמרים, הזמרות או הלהקות שאתה הכי אוהב?</h3>
+            <h3 class="text-lg text-gray-700 font-semibold">מי הם הזמרים, הזמרות או הלהקות שאת הכי אוהבת?</h3>
             <div class="mt-4 text-right">
-                <textarea id="artistsText" rows="3" class="w-full bg-white border-2 border-sky-200 rounded-xl p-4 text-base focus:outline-none focus:border-purple-400 resize-none" placeholder="לדוגמה: שלמה ארצי, הביטלס...">${state.answers.favoriteArtists}</textarea>
+                <textarea id="artistsText" rows="3" class="w-full bg-white/90 border-2 border-sky-200 rounded-xl p-4 text-base focus:outline-none focus:border-purple-400 resize-none backdrop-blur-sm" placeholder="לדוגמה: נועה קירל, טיילור סוויפט, שלמה ארצי...">${state.answers.favoriteArtists}</textarea>
             </div>
-            <div class="mt-8 flex justify-between items-center">
-                <button onclick="goToStep('quiz2')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="saveTextAndGo('courses')" class="btn-rainbow px-8 py-2 rounded-full text-base">בוא נבחר שיעורים!</button>
+            <div class="mt-8 flex justify-between items-center border-t border-gray-200 pt-4">
+                <button onclick="goToStep('quiz2')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold transition-colors">חזור</button>
+                <button onclick="saveTextAndGo('courses')" class="btn-rainbow px-8 py-2 rounded-full text-base font-bold shadow-sm hover:shadow-md transition-shadow">בואי נבחר שיעורים!</button>
             </div>
         </div>
     `;
@@ -550,15 +570,15 @@ function saveTextAndGo(nextStep) {
 }
 
 function renderCourses() {
-    let message = "בחר את השיעורים שאתה רוצה ללמוד.";
+    let message = "בחרי את השיעורים שתרצי ללמוד:";
     if (state.answers.activity !== "") {
-        message = "לפי התשובות שלך, הנה האפשרויות המתאימות:";
+        message = "לפי התשובות שלך, הנה האפשרויות המתאימות. סמני את מה שהכי מדבר אלייך:";
     }
     
     let optionsHtml = courses.map(course => `
         <label class="custom-checkbox cursor-pointer block text-right">
             <input type="checkbox" value="${course.id}" class="hidden course-cb" ${state.answers.courses.includes(course.id) ? "checked" : ""} onchange="handleCourseSelection(this)">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-base hover:border-pink-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
+            <div class="bg-white/90 border-2 border-sky-100 rounded-xl p-3 transition-all text-base hover:border-pink-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 backdrop-blur-sm">
                 <span class="font-semibold">${course.name}</span>
                 ${course.needsInstrument ? '<span class="text-xs bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full whitespace-nowrap">אפשרות כלי בהשאלה</span>' : ""}
             </div>
@@ -568,14 +588,14 @@ function renderCourses() {
     const html = `
         <div class="space-y-4" id="courses-container">
             <h2 class="text-2xl font-bold text-sky-800">בחירת שיעורים</h2>
-            <p class="text-sm text-gray-700">${message}</p>
-            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-2 rounded-lg text-sm">
-                * ניתן לבחור עד 2 תחומים לשילוב.
+            <p class="text-base text-gray-800 font-medium">${message}</p>
+            <div class="bg-yellow-50/90 border border-yellow-200 text-yellow-800 p-2 rounded-lg text-sm backdrop-blur-sm font-semibold">
+                * תוכלי לבחור תחום אחד, או לשלב עד 2 תחומים.
             </div>
             <div class="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar pb-2">${optionsHtml}</div>
-            <div class="mt-6 flex justify-between pt-3 border-t border-gray-100">
-                <button onclick="goToStep(state.answers.activity !== '' ? 'quiz3' : 'welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('loanOrSchedule', state.answers.courses.length > 0 && state.answers.courses.length <= 2, 'יש לבחור תחום אחד או שניים', 'courses-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">המשך</button>
+            <div class="mt-6 flex justify-between items-center pt-4 border-t border-gray-200">
+                <button onclick="goToStep(state.answers.activity !== '' ? 'quiz3' : 'welcome')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold transition-colors">חזור</button>
+                <button onclick="validateAndGo('loanOrSchedule', state.answers.courses.length > 0 && state.answers.courses.length <= 2, 'אנא בחרי תחום אחד או שניים', 'courses-container')" class="btn-rainbow px-8 py-2 rounded-full text-base font-bold shadow-sm hover:shadow-md transition-shadow">המשך</button>
             </div>
         </div>
     `;
@@ -611,20 +631,20 @@ function renderLoan() {
     const html = `
         <div class="space-y-4" id="loan-container">
             <h2 class="text-2xl font-bold text-sky-800">השאלת כלי נגינה</h2>
-            <p class="text-sm text-gray-700">בחרת בתחום לימוד שמאפשר קבלת כלי בהשאלה לתקופת הלימודים. האם תצטרך כלי?</p>
+            <p class="text-base text-gray-800 font-medium">בחרת בתחום לימוד שמאפשר קבלת כלי בהשאלה לתקופת הלימודים. האם תצטרכי שניערך עם כלי עבורך?</p>
             <div class="flex flex-col sm:flex-row gap-4 mt-6">
                 <label class="custom-radio cursor-pointer block flex-1">
                     <input type="radio" name="loan" value="yes" class="hidden" ${state.answers.needsLoan === true ? "checked" : ""} onchange="state.answers.needsLoan = true">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-base hover:border-green-300 text-center">כן, אשמח לכלי בהשאלה</div>
+                    <div class="bg-white/90 border-2 border-sky-100 rounded-xl p-4 transition-all text-base hover:border-green-300 text-center backdrop-blur-sm font-semibold">כן, אשמח לכלי בהשאלה</div>
                 </label>
                 <label class="custom-radio cursor-pointer block flex-1">
                     <input type="radio" name="loan" value="no" class="hidden" ${state.answers.needsLoan === false ? "checked" : ""} onchange="state.answers.needsLoan = false">
-                    <div class="bg-white border-2 border-sky-100 rounded-xl p-4 transition-all text-base hover:border-red-300 text-center">לא, יש לי כלי משלי</div>
+                    <div class="bg-white/90 border-2 border-sky-100 rounded-xl p-4 transition-all text-base hover:border-red-300 text-center backdrop-blur-sm font-semibold">לא, יש לי כלי משלי</div>
                 </label>
             </div>
-            <div class="mt-8 flex justify-between">
-                <button onclick="goToStep('courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('schedule', state.answers.needsLoan !== null, 'אנא בחר אם תרצה כלי בהשאלה', 'loan-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">המשך</button>
+            <div class="mt-8 flex justify-between items-center pt-4 border-t border-gray-200">
+                <button onclick="goToStep('courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold transition-colors">חזור</button>
+                <button onclick="validateAndGo('schedule', state.answers.needsLoan !== null, 'אנא סמני אם תרצי כלי בהשאלה', 'loan-container')" class="btn-rainbow px-8 py-2 rounded-full text-base font-bold shadow-sm hover:shadow-md transition-shadow">המשך</button>
             </div>
         </div>
     `;
@@ -636,33 +656,33 @@ function renderSchedule() {
     let daysHtml = days.map(day => `
         <label class="custom-checkbox cursor-pointer block">
             <input type="checkbox" value="${day}" class="hidden schedule-day" ${state.answers.availability.days.includes(day) ? "checked" : ""} onchange="updateDays(this)">
-            <div class="bg-white border-2 border-sky-100 rounded-xl p-3 transition-all text-sm text-center">${day}</div>
+            <div class="bg-white/90 border-2 border-sky-100 rounded-xl p-2 transition-all text-sm text-center backdrop-blur-sm font-medium">${day}</div>
         </label>
     `).join("");
 
     const html = `
         <div class="space-y-4" id="schedule-container">
             <h2 class="text-2xl font-bold text-sky-800">תיאום מועדים</h2>
-            <p class="text-sm text-gray-700">באילו ימים ושעות יהיה לך נוח לקיים את השיעורים?</p>
+            <p class="text-base text-gray-800 font-medium">באילו ימים ושעות יהיה לך הכי נוח לקיים את השיעורים?</p>
             <div class="mt-4 text-right">
-                <label class="font-semibold block mb-2 text-sm">ימים אפשריים:</label>
-                <div class="grid grid-cols-5 gap-2">${daysHtml}</div>
+                <label class="font-bold block mb-2 text-sm text-sky-900">ימים אפשריים (אפשר לסמן כמה):</label>
+                <div class="grid grid-cols-5 gap-1.5">${daysHtml}</div>
             </div>
-            <div class="mt-6 flex gap-4 text-right justify-center items-center flex-wrap bg-white/50 p-4 rounded-xl">
+            <div class="mt-6 flex gap-4 text-right justify-center items-center flex-wrap bg-white/70 p-4 rounded-xl border border-sky-100 backdrop-blur-sm">
                 <div>
-                    <label class="font-semibold block mb-1 text-sm">משעה:</label>
-                    <input type="time" id="start-time" value="${state.answers.availability.startHour}" min="14:00" max="20:00" class="border p-2 rounded-lg text-base" onchange="state.answers.availability.startHour = this.value">
+                    <label class="font-bold block mb-1 text-sm text-sky-900">החל משעה:</label>
+                    <input type="time" id="start-time" value="${state.answers.availability.startHour}" min="14:00" max="20:00" class="border border-sky-200 p-2 rounded-lg text-base outline-none focus:border-sky-500" onchange="state.answers.availability.startHour = this.value">
                 </div>
-                <div class="text-xl mt-4">-</div>
+                <div class="text-xl mt-4 font-bold text-gray-400">-</div>
                 <div>
-                    <label class="font-semibold block mb-1 text-sm">עד שעה:</label>
-                    <input type="time" id="end-time" value="${state.answers.availability.endHour}" min="14:00" max="20:00" class="border p-2 rounded-lg text-base" onchange="state.answers.availability.endHour = this.value">
+                    <label class="font-bold block mb-1 text-sm text-sky-900">ועד שעה:</label>
+                    <input type="time" id="end-time" value="${state.answers.availability.endHour}" min="14:00" max="20:00" class="border border-sky-200 p-2 rounded-lg text-base outline-none focus:border-sky-500" onchange="state.answers.availability.endHour = this.value">
                 </div>
             </div>
-            <div class="text-sm text-gray-500 mt-2">* טווח השעות: 14:00 - 20:00.</div>
-            <div class="mt-8 flex justify-between pt-4 border-t border-gray-100">
-                <button onclick="goToStep(checkNeedsLoan() ? 'loan' : 'courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold">חזור</button>
-                <button onclick="validateAndGo('summary', state.answers.availability.days.length > 0, 'אנא בחר לפחות יום אחד', 'schedule-container')" class="btn-rainbow px-8 py-2 rounded-full text-base">הצג שובר!</button>
+            <div class="text-sm text-gray-600 mt-2 font-medium">* טווח השעות האפשרי: 14:00 - 20:00.</div>
+            <div class="mt-8 flex justify-between items-center pt-4 border-t border-gray-200">
+                <button onclick="goToStep(checkNeedsLoan() ? 'loan' : 'courses')" class="text-gray-500 hover:text-gray-800 px-4 py-2 font-bold transition-colors">חזור</button>
+                <button onclick="validateAndGo('summary', state.answers.availability.days.length > 0, 'אנא סמני לפחות יום אחד', 'schedule-container')" class="btn-rainbow px-8 py-2 rounded-full text-base font-bold shadow-sm hover:shadow-md transition-shadow">הצגת השובר המלא!</button>
             </div>
         </div>
     `;
@@ -681,41 +701,42 @@ function renderSummary() {
     const selectedCourseNames = state.answers.courses.map(id => courses.find(c => c.id === id).name).join(" ו-");
     let loanText = "";
     if (checkNeedsLoan()) {
-        loanText = state.answers.needsLoan ? "<p class='text-green-600 font-semibold mt-2'>✔️ כולל קבלת כלי בהשאלה לתקופת הלימודים.</p>" : "<p class='text-gray-500 mt-2'>יש לך כלי משלך (אין צורך בהשאלה).</p>";
+        loanText = state.answers.needsLoan ? "<p class='text-green-700 font-bold mt-2 text-sm'>✔️ כולל קבלת כלי נגינה בהשאלה.</p>" : "<p class='text-gray-600 mt-2 text-sm font-medium'>יש לך כלי משלך (אין צורך בהשאלה).</p>";
     }
     const daysText = state.answers.availability.days.join(", ");
     
     const html = `
         <div class="space-y-4" id="voucher-content">
-            <div class="border-4 border-dashed border-sky-300 rounded-3xl p-6 sm:p-8 bg-white/90 relative">
+            <div class="border-4 border-dashed border-sky-400 rounded-3xl p-6 sm:p-8 bg-white/95 relative shadow-inner">
                 <div class="absolute -top-4 -right-4 text-4xl print-hide">🎁</div>
+                <div class="absolute -bottom-4 -left-4 text-4xl print-hide">✨</div>
                 
-                <h1 class="text-4xl font-bold text-sky-800 mb-2">שובר מתנה</h1>
-                <h2 class="text-xl text-sky-600 font-medium mb-6">לכבוד הדס נריה פלד - לרגל הבר מצווה!</h2>
+                <h1 class="text-4xl font-bold text-sky-800 mb-2">שובר מתנה אקסקלוסיבי</h1>
+                <h2 class="text-xl text-sky-600 font-semibold mb-6">מוענק באהבה להדס נריה פלד - לרגל הבר מצווה!</h2>
                 
                 <div class="text-lg leading-relaxed text-gray-800 space-y-3 text-right inline-block mx-auto w-full">
-                    <p>שובר זה מעניק לך מכל הלב:</p>
-                    <p class="font-bold text-2xl text-center bg-sky-100 py-2 rounded-xl text-sky-900 border border-sky-200 shadow-sm">
-                        3 חודשים של שיעורי מוזיקה
+                    <p class="font-medium text-center">שובר זה מעניק לך מכל הלב:</p>
+                    <p class="font-bold text-2xl text-center bg-sky-100 py-3 rounded-xl text-sky-900 border border-sky-300 shadow-sm">
+                        3 חודשים של שיעורי מוזיקה מתנה!
                     </p>
-                    <p class="text-center font-medium">(4 שיעורים בחודש)</p>
+                    <p class="text-center font-medium text-gray-600">(4 שיעורים בחודש)</p>
                     
-                    <div class="mt-6 bg-yellow-50 p-4 rounded-xl border border-yellow-100">
-                        <p><span class="font-semibold">התחומים שבחרת:</span> ${selectedCourseNames}</p>
+                    <div class="mt-6 bg-yellow-50/90 p-5 rounded-xl border border-yellow-200 shadow-sm">
+                        <p><span class="font-bold text-sky-900">התחומים שבחרת:</span> ${selectedCourseNames}</p>
                         ${loanText}
-                        <p class="mt-3"><span class="font-semibold">הזמן שנוח לך:</span> בימי ${daysText} <br>בין ${state.answers.availability.startHour} ל-${state.answers.availability.endHour}.</p>
+                        <p class="mt-3"><span class="font-bold text-sky-900">הזמן שנוח לך:</span> בימי ${daysText} <br>בין השעות ${state.answers.availability.startHour} ל-${state.answers.availability.endHour}.</p>
                     </div>
                 </div>
                 
-                <div class="mt-6 text-center">
-                    <p class="text-base font-bold text-sky-800">שנת מצוות מהנה ומלאה במוזיקה!</p>
-                    <p class="text-xl font-bold text-pink-600 mt-2">באהבה, דוד אילן ❤️</p>
+                <div class="mt-8 text-center bg-pink-50 p-4 rounded-xl border border-pink-100">
+                    <p class="text-lg font-bold text-sky-800">מאחלים לך שנת מצוות מהנה, משמעותית ומלאה במוזיקה!</p>
+                    <p class="text-2xl font-bold text-pink-600 mt-2">באהבה גדולה, דוד אילן ❤️</p>
                 </div>
             </div>
             
             <div class="mt-6 flex justify-center print-hide">
                 <button onclick="downloadPDF()" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg transition-transform hover:scale-105 flex items-center gap-2">
-                    <span>הורד כשמירה לטלפון (PDF)</span> 📥
+                    <span>הורידי כשמירה לטלפון (PDF)</span> 📥
                 </button>
             </div>
         </div>
