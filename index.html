@@ -179,15 +179,16 @@ h1, h2, h3, .font-bold, .font-semibold {
 
 <div class="music-bg-container print-hide" id="music-layer"></div>
 
-<div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-between py-6 px-4 print-hide">
-    <div class="w-full max-w-3xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative bg-white mt-2 flex items-center justify-center">
-        <video id="local-video-player" controls playsinline preload="auto" class="w-full h-full object-contain">
+<!-- מסך ניצחון מתוקן עם נגן וידאו יציב -->
+<div id="win-screen" class="hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-md flex-col items-center justify-center py-6 px-4 print-hide overflow-y-auto">
+    <div class="w-full max-w-2xl bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-sky-300 relative my-2">
+        <video id="local-video-player" controls playsinline preload="auto" class="w-full max-h-[60vh] object-contain mx-auto">
             <source src="kidd-video.mp4" type="video/mp4">
             הדפדפן שלך אינו תומך בהפעלת וידאו.
         </video>
     </div>
-    <div class="mt-2 text-center w-full">
-        <h2 class="text-3xl font-bold text-sky-800 mb-3 drop-shadow-md">כל הכבוד! הצלחת לתפוס 13 כלי נגינה! 🎉</h2>
+    <div class="mt-4 text-center w-full">
+        <h2 class="text-2xl sm:text-3xl font-bold text-sky-800 mb-3 drop-shadow-md">כל הכבוד! הצלחת לתפוס 13 כלי נגינה! 🎉</h2>
         <button onclick="startApp()" class="btn-rainbow px-10 py-3 rounded-full text-xl shadow-xl hover:scale-110 transition-transform duration-300 w-full sm:w-auto">
             ברוך הבא לעולם המוזיקה!
         </button>
@@ -281,16 +282,14 @@ function startSpawner() {
     if (!container) return;
     container.innerHTML = "";
 
-    // יצירת כמות התחלתית עשירה של פריטים על המסך
     for (let i = 0; i < 15; i++) {
         spawnFloatingItem();
     }
 
-    // ייצור רציף ומהיר של פריטים חדשים כל חצי שנייה כדי שלא ייגמר לעולם
     spawnerInterval = setInterval(() => {
         if (state.currentStep === "entry" && clickCount < 13) {
             spawnFloatingItem();
-            spawnFloatingItem(); // מייצר שניים בכל פעם לוודא שפע אינסופי
+            spawnFloatingItem();
         }
     }, 500);
 }
@@ -312,7 +311,7 @@ function spawnFloatingItem() {
     el.innerText = itemData.emoji;
     
     const randomLeft = Math.floor(Math.random() * 90) + 2;
-    const duration = Math.random() * 2 + 4; // מהירות זרימה נוחה (בין 4 ל-6 שניות)
+    const duration = Math.random() * 2 + 4;
     
     el.style.left = randomLeft + "%";
     el.style.animationDuration = duration + "s";
@@ -323,7 +322,6 @@ function spawnFloatingItem() {
 
     container.appendChild(el);
 
-    // הסרת הפריט מהזיכרון כשהוא יוצא מהמסך
     setTimeout(() => {
         if (el.parentNode) {
             el.parentNode.removeChild(el);
@@ -372,8 +370,10 @@ function triggerWin() {
     
     const videoPlayer = document.getElementById("local-video-player");
     if (videoPlayer) {
+        videoPlayer.currentTime = 0;
+        videoPlayer.load();
         videoPlayer.play().catch(function(error) {
-            console.log("דפדפן מנע הפעלה אוטומטית", error);
+            console.log("דפדפן מנע הפעלה אוטומטית:", error);
         });
     }
 }
@@ -751,7 +751,7 @@ function goToStep(step) {
     const appElement = document.getElementById("app");
     if (step === "entry") {
         appElement.style.display = "none";
-        setGameMode(true); // מפעיל מחדש את מחולל הפריטים בוודאות
+        setGameMode(true);
     } else {
         appElement.style.display = "block";
         setGameMode(false);
